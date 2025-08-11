@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ConsultationsListScreen from '../screens/ConsultationsListScreen';
-// import ConsultationDetailsScreen from '../screens/ConsultationDetailsScreen';
+import ConsultationDetailsScreen from '../screens/ConsultationDetailsScreen';
 // import AddConsultationScreen from '../screens/AddConsultationScreen';
 import { RootStackParamList } from '../types/RootStackParamList';
 
@@ -14,12 +14,12 @@ export default function AppNavigator() {
         component={ConsultationsListScreen}
         options={{ title: 'Consultas' }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="ConsultationDetails"
         component={ConsultationDetailsScreen}
         options={{ title: 'Detalhes da Consulta' }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="AddConsultation"
         component={AddConsultationScreen}
         options={{ title: 'Agendar Consulta' }}

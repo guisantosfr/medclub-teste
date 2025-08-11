@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from "react-native"
+import { Button, FlatList, StyleSheet, Text, View } from "react-native"
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/RootStackParamList'
@@ -17,8 +17,10 @@ export default function ConsultationsListScreen() {
                 <View style={styles.emptyWrap}>
                     <Text style={styles.emptyTitle}>Sem consultas</Text>
                     <Text style={styles.emptyText}>Toque em "Nova" para agendar sua primeira consulta.</Text>
+                    <Button title="Nova consulta" onPress={() => {navigation.navigate('AddConsultation')}}></Button>
                 </View>
             ) : (
+                <>
                 <FlatList
                     data={consultations}
                     keyExtractor={item => item.id.toString()}
@@ -28,6 +30,9 @@ export default function ConsultationsListScreen() {
                         <ConsultationCard item={item} onPress={() => navigation.navigate('ConsultationDetails', { id: item.id.toString() })} />
                     )}
                 />
+                                    <Button title="Nova consulta" onPress={() => {navigation.navigate('AddConsultation')}}></Button>
+
+                </>
             )}
         </View>
     )

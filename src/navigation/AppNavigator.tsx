@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ConsultationsListScreen from '../screens/ConsultationsListScreen';
 // import ConsultationDetailsScreen from '../screens/ConsultationDetailsScreen';
 // import AddConsultationScreen from '../screens/AddConsultationScreen';
-import { RootStackParamList } from './types';
+import { RootStackParamList } from '../types/RootStackParamList';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

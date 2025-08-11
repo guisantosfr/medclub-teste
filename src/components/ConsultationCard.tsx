@@ -20,10 +20,6 @@ export default function AppointmentCard({ item, onPress }: Props) {
                 </Text>
             </View>
             <Text style={styles.title}>{item.doctor}</Text>
-            <Text style={styles.subtitle}>{item.specialty}</Text>
-            <Text style={styles.location} numberOfLines={2}>
-                {item.location}
-            </Text>
         </Pressable>
     )
 }

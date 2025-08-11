@@ -1,5 +1,5 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
 import { Consultation } from '../types/Consultation'
+import { Avatar, Card, Text } from 'react-native-paper'
 
 type Props = {
     item: Consultation
@@ -8,34 +8,18 @@ type Props = {
 
 export default function AppointmentCard({ item, onPress }: Props) {
     return (
-        <Pressable
+        <Card
             onPress={onPress}
-            style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}
-            accessibilityRole="button"
-            accessibilityLabel={`Abrir consulta com ${item.doctor} em ${item.date} às ${item.time}`}
         >
-            <View style={styles.row}>
-                <Text style={styles.when}>
-                    {item.date} • {item.time}
-                </Text>
-            </View>
-            <Text style={styles.title}>{item.doctor}</Text>
-        </Pressable>
+            <Card.Title
+            title={item.doctor}
+            subtitle={item.specialty}
+            left={(props) => <Avatar.Icon {...props} icon="doctor" />}
+            ></Card.Title>
+
+            <Card.Content>
+                <Text variant='titleSmall'>{item.date} - {item.time}</Text>
+            </Card.Content>
+        </Card>
     )
 }
-
-const styles = StyleSheet.create({
-    card: {
-        backgroundColor: '#ffffff',
-        borderRadius: 12,
-        padding: 14,
-        gap: 6,
-        borderWidth: 1,
-        borderColor: '#e5e7eb',
-    },
-    row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    when: { color: '#065f46', fontWeight: '600' },
-    title: { fontSize: 16, fontWeight: '700', color: '#111827' },
-    subtitle: { fontSize: 14, color: '#6b7280' },
-    location: { fontSize: 13, color: '#374151' },
-})

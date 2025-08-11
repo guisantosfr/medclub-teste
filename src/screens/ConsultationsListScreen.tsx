@@ -5,6 +5,7 @@ import type { RootStackParamList } from '../types/RootStackParamList'
 
 import { consultations } from '../utils/mockConsultations'
 import ConsultationCard from '../components/ConsultationCard';
+import { SafeAreaView } from "react-native-safe-area-context"
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
 
@@ -12,7 +13,7 @@ export default function ConsultationsListScreen() {
     const navigation = useNavigation<Nav>()
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {consultations.length === 0 ? (
                 <View style={styles.emptyWrap}>
                     <Text style={styles.emptyTitle}>Sem consultas</Text>
@@ -24,8 +25,9 @@ export default function ConsultationsListScreen() {
                 <FlatList
                     data={consultations}
                     keyExtractor={item => item.id.toString()}
-                    ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                    ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
                     contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+                    style={styles.cardList}
                     renderItem={({ item }) => (
                         <ConsultationCard item={item} onPress={() => navigation.navigate('ConsultationDetails', { id: item.id.toString() })} />
                     )}
@@ -34,7 +36,7 @@ export default function ConsultationsListScreen() {
 
                 </>
             )}
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -50,4 +52,7 @@ const styles = StyleSheet.create({
     },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
     emptyText: { fontSize: 14, color: '#6b7280', textAlign: 'center' },
+    cardList: {
+        maxHeight: '90%'
+    }
 })

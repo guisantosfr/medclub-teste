@@ -9,7 +9,7 @@ export const mockConsultations = [
   },
   {
     id: '2',
-    date: '2025-08-20',
+    date: '2025-08-15',
     time: '09:30',
     doctor: 'Dra. Maria Souza',
     specialty: 'Dermatologia',
@@ -17,7 +17,7 @@ export const mockConsultations = [
   },
   {
     id: '3',
-    date: '2025-08-15',
+    date: '2025-08-12',
     time: '14:00',
     doctor: 'Dr. João Silva',
     specialty: 'Cardiologia',

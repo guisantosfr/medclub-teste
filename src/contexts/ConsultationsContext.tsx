@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useMemo } from "react";
 import { mockConsultations } from "../utils/mockConsultations";
 import { Consultation } from "../types/Consultation";
 //import { v4 as uuidv4 } from "uuid"; // npm install uuid
@@ -15,6 +15,17 @@ const ConsultationsContext = createContext<ConsultationsContextData | undefined>
 export function ConsultationsProvider({ children }: { children: ReactNode }) {
   const [consultations, setConsultations] = useState<Consultation[]>(mockConsultations);
 
+  const sortedConsultations = useMemo(() => {
+    return [...consultations].sort((a, b) => {
+      // Compare dates first
+      const dateComparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+      if (dateComparison !== 0) return dateComparison;
+      
+      // If dates are equal, compare times
+      return a.time.localeCompare(b.time);
+    });
+  }, [consultations]);
+  
   function getById(id: string) {
     return consultations.find(c => c.id === id);
   }
@@ -35,7 +46,12 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ConsultationsContext.Provider value={{ consultations, getById, add, remove }}>
+    <ConsultationsContext.Provider value={{ 
+      consultations: sortedConsultations,
+      getById,
+      add,
+      remove
+    }}>
       {children}
     </ConsultationsContext.Provider>
   );

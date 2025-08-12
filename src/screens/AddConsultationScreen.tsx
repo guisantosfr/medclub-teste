@@ -3,10 +3,20 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import {
     Appbar,
     TextInput,
-    Button
+    Button,
+    HelperText
 } from 'react-native-paper';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
+import { useForm, Controller } from "react-hook-form"
+
+type FormData = {
+    date: Date
+    time: Date
+    doctor: string
+    specialty: string
+    location: string
+}
 
 const medicos = [
     { label: 'Dr. João Silva', value: 'Dr. João Silva' },
@@ -22,34 +32,44 @@ const locations = [
     { label: 'Hospital 1', value: 'Hospital 1' }
 ]
 
-const AddConsultationScreen = () => {
-    const [data, setData] = useState(new Date());
-    const [hora, setHora] = useState(new Date());
+
+export default function AddConsultationScreen() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
-    const [medico, setMedico] = useState<string>('');
-    
-    const [especialidade, setEspecialidade] = useState<string>('');
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        watch
+    } = useForm<FormData>({
+        defaultValues: {
+            date: new Date(),
+            time: new Date(),
+            doctor: '',
+            specialty: '',
+            location: ''
+        },
+    })
 
-    const [localizacao, setLocalizacao] = useState<string>('');
+    const watchedDate = watch('date');
+    const watchedTime = watch('time');
 
-    const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date | undefined) => {
+    const onSubmit = (data: FormData) => console.log(data)
+
+    const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowDatePicker(false);
         if (selectedDate) {
-            setData(selectedDate);
+            setValue('date', selectedDate);
         }
     };
 
-    const handleTimeChange = (event: DateTimePickerEvent, selectedTime?: Date | undefined) => {
+    const handleTimeChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
         setShowTimePicker(false);
         if (selectedTime) {
-            setHora(selectedTime);
+            setValue('time', selectedTime);
         }
-    };
-
-    const handleSubmit = () => {
-    
     };
 
     return (
@@ -59,16 +79,32 @@ const AddConsultationScreen = () => {
             </Appbar.Header>
             <ScrollView contentContainerStyle={styles.container}>
                 {/* Campo de Data */}
-                <TextInput
-                    label="Data"
-                    value={data.toLocaleDateString('pt-BR')}
-                    onFocus={() => setShowDatePicker(true)}
-                    style={styles.input}
-                    right={<TextInput.Icon icon="calendar-today" />}
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione uma data',
+                    }}
+                    render={({ field }) => (
+                        <>
+                            <TextInput
+                                label="Data"
+                                value={field.value.toLocaleDateString('pt-BR')}
+                                onFocus={() => setShowDatePicker(true)}
+                                style={styles.input}
+                                right={<TextInput.Icon icon="calendar-today" />}
+                                error={!!errors.date}
+                            />
+                            <HelperText type="error" visible={!!errors.date}>
+                                {errors.date?.message}
+                            </HelperText>
+                        </>
+                    )}
+                    name="date"
                 />
+                
                 {showDatePicker && (
                     <DateTimePicker
-                        value={data}
+                        value={watchedDate}
                         mode="date"
                         display="default"
                         onChange={handleDateChange}
@@ -76,50 +112,108 @@ const AddConsultationScreen = () => {
                 )}
 
                 {/* Campo de Hora */}
-                <TextInput
-                    label="Hora"
-                    value={hora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                    onFocus={() => setShowTimePicker(true)}
-                    style={styles.input}
-                    right={<TextInput.Icon icon="clock-outline" />}
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione um horário',
+                    }}
+                    render={({ field }) => (
+                        <>
+                            <TextInput
+                                label="Hora"
+                                value={field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                onFocus={() => setShowTimePicker(true)}
+                                style={styles.input}
+                                right={<TextInput.Icon icon="clock-outline" />}
+                                error={!!errors.time}
+                            />
+                            <HelperText type="error" visible={!!errors.time}>
+                                {errors.time?.message}
+                            </HelperText>
+                        </>
+                    )}
+                    name="time"
                 />
+                
                 {showTimePicker && (
                     <DateTimePicker
-                        value={hora}
+                        value={watchedTime}
                         mode="time"
                         display="default"
                         onChange={handleTimeChange}
                     />
                 )}
 
-                <Dropdown
-                    label="Médico"
-                    placeholder='Selecione o médico'
-                    options={medicos}
-                    value={medico}
-                    onSelect={setMedico}
+                {/* Campo Médico */}
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione um médico',
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                        <View style={styles.dropdown}>
+                            <Dropdown
+                                label="Médico"
+                                placeholder='Selecione o médico'
+                                options={medicos}
+                                value={value}
+                                onSelect={onChange}
+                            />
+                            <HelperText type="error" visible={!!errors.doctor}>
+                                {errors.doctor?.message}
+                            </HelperText>
+                        </View>
+                    )}
+                    name="doctor"
                 />
 
-                <View style={styles.dropdown}>
-                    <Dropdown
-                        label="Especialidade"
-                        placeholder='Selecione a especialidade'
-                        options={specialties}
-                        value={especialidade}
-                        onSelect={setEspecialidade}
-                    />
-
-                </View>
-
-                <Dropdown
-                    label="Localização"
-                    placeholder='Selecione a localização'
-                    options={locations}
-                    value={localizacao}
-                    onSelect={setLocalizacao}
+                {/* Campo Especialidade */}
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione uma especialidade',
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                        <View style={styles.dropdown}>
+                            <Dropdown
+                                label="Especialidade"
+                                placeholder='Selecione a especialidade'
+                                options={specialties}
+                                value={value}
+                                onSelect={onChange}
+                            />
+                            <HelperText type="error" visible={!!errors.specialty}>
+                                {errors.specialty?.message}
+                            </HelperText>
+                        </View>
+                    )}
+                    name="specialty"
                 />
 
-                <Button mode="contained" onPress={handleSubmit} style={styles.button}>
+                {/* Campo Localização */}
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione uma localização',
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                        <View style={styles.dropdown}>
+                            <Dropdown
+                                label="Localização"
+                                placeholder='Selecione a localização'
+                                options={locations}
+                                value={value}
+                                onSelect={onChange}
+                            />
+                            <HelperText type="error" visible={!!errors.location}>
+                                {errors.location?.message}
+                            </HelperText>
+                        </View>
+                    )}
+                    name="location"
+                />
+
+                <Button mode="contained" onPress={handleSubmit(onSubmit)} style={styles.button}>
                     Agendar Consulta
                 </Button>
             </ScrollView>
@@ -134,7 +228,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5'
     },
     input: {
-        marginBottom: 16,
+        marginBottom: 8,
         width: '100%',
         backgroundColor: '#fff',
     },
@@ -147,5 +241,3 @@ const styles = StyleSheet.create({
         marginVertical: 16
     }
 });
-
-export default AddConsultationScreen;

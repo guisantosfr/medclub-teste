@@ -1,6 +1,6 @@
-export const consultations = [
+export const mockConsultations = [
   {
-    id: 1,
+    id: '1',
     date: '2025-08-15',
     time: '14:00',
     doctor: 'Dr. João Silva',
@@ -8,7 +8,7 @@ export const consultations = [
     location: 'Clínica Saúde Viva',
   },
   {
-    id: 2,
+    id: '2',
     date: '2025-08-20',
     time: '09:30',
     doctor: 'Dra. Maria Souza',
@@ -16,35 +16,11 @@ export const consultations = [
     location: 'Hospital Central',
   },
   {
-    id: 3,
+    id: '3',
     date: '2025-08-15',
     time: '14:00',
     doctor: 'Dr. João Silva',
     specialty: 'Cardiologia',
     location: 'Clínica Saúde Viva',
-  },
-  {
-    id: 4,
-    date: '2025-08-20',
-    time: '09:30',
-    doctor: 'Dra. Maria Souza',
-    specialty: 'Dermatologia',
-    location: 'Hospital Central',
-  },
-  {
-    id: 5,
-    date: '2025-08-15',
-    time: '14:00',
-    doctor: 'Dr. João Silva',
-    specialty: 'Cardiologia',
-    location: 'Clínica Saúde Viva',
-  },
-  {
-    id: 6,
-    date: '2025-08-20',
-    time: '09:30',
-    doctor: 'Dra. Maria Souza',
-    specialty: 'Dermatologia',
-    location: 'Hospital Central',
-  },
+  }
 ];

@@ -3,18 +3,20 @@ import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/RootStackParamList'
 
-import { consultations } from '../utils/mockConsultations'
 import ConsultationCard from '../components/ConsultationCard';
 import { SafeAreaView } from "react-native-safe-area-context"
 import { AnimatedFAB, Appbar } from "react-native-paper"
 import { useState } from "react"
+import { useConsultations } from "../contexts/ConsultationsContext";
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
 
 export default function ConsultationsListScreen() {
     const navigation = useNavigation<Nav>()
+    const { consultations } = useConsultations();
 
     const [isExtended, setIsExtended] = useState(true);
+
 
     const onScroll = ({ nativeEvent }) => {
         const currentScrollPosition =

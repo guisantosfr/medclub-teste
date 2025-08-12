@@ -3,19 +3,18 @@ import { View, Text, StyleSheet, Alert, Pressable } from 'react-native'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../types/RootStackParamList'
-import { consultations } from '../utils/mockConsultations'
+import { useConsultations } from "../contexts/ConsultationsContext";
+import { Appbar } from 'react-native-paper';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
 export default function ConsultationDetailsScreen({ route, navigation }: Props) {
   const { id } = route.params
-  const item = consultations.find(a => a.id.toString() == id)
+  const { getById, remove } = useConsultations();
 
-  const deleteConsultation = (id) => {
+  const consultation = getById(id);
 
-  }
-
-  if (!item) {
+  if (!consultation) {
     return (
       <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <Text style={{ color: '#6b7280' }}>Consulta não encontrada.</Text>
@@ -30,7 +29,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         text: 'Excluir',
         style: 'destructive',
         onPress: () => {
-          deleteConsultation(item.id)
+          remove(consultation.id)
           navigation.popToTop()
         },
       },
@@ -39,12 +38,16 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 
   return (
     <View style={styles.container}>
+      <Appbar.Header>
+        <Appbar.Content title="Detalhes da consulta" />
+      </Appbar.Header>
+
       <View style={styles.card}>
-        <Row label="Data">{item.date}</Row>
-        <Row label="Hora">{item.time}</Row>
-        <Row label="Médico(a)">{item.doctor}</Row>
-        <Row label="Especialidade">{item.specialty}</Row>
-        <Row label="Localização">{item.location}</Row>
+        <Row label="Data">{consultation.date}</Row>
+        <Row label="Hora">{consultation.time}</Row>
+        <Row label="Médico(a)">{consultation.doctor}</Row>
+        <Row label="Especialidade">{consultation.specialty}</Row>
+        <Row label="Localização">{consultation.location}</Row>
       </View>
 
       <Pressable

@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { AnimatedFAB, Appbar } from "react-native-paper"
 import { useState } from "react"
 import { useConsultations } from "../contexts/ConsultationsContext";
+import EmptyState from "../components/EmptyState";
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
 
@@ -28,11 +29,7 @@ export default function ConsultationsListScreen() {
     return (
         <SafeAreaView style={styles.container}>
             {consultations.length === 0 ? (
-                <View style={styles.emptyWrap}>
-                    <Text style={styles.emptyTitle}>Sem consultas</Text>
-                    <Text style={styles.emptyText}>Toque em "Nova" para agendar sua primeira consulta.</Text>
-                    <Button title="Nova consulta" onPress={() => { navigation.navigate('AddConsultation') }}></Button>
-                </View>
+                <EmptyState />
             ) : (
                 <>
                     <Appbar.Header>

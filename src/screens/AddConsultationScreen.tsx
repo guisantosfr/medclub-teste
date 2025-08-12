@@ -12,6 +12,7 @@ import { useForm, Controller } from "react-hook-form"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import { doctors, specialties, locations } from '../utils/mockData'; 
 
 type FormData = {
     date: Date
@@ -21,20 +22,20 @@ type FormData = {
     location: string
 }
 
-const medicos = [
-    { label: 'Dr. João Silva', value: 'Dr. João Silva' },
-    { label: 'Dra. Maria Oliveira', value: 'Dra. Maria Oliveira' },
-    { label: 'Dr. Pedro Santos', value: 'Dr. Pedro Santos' },
-];
+const doctorOptions = doctors.map(doc => ({
+    label: doc.name,
+    value: doc.name
+}));
 
-const specialties = [
-    { label: 'Cardiologia', value: 'Cardiologia' }
-]
+const specialtyOptions = specialties.map(spec => ({
+    label: spec.name,
+    value: spec.name
+}));
 
-const locations = [
-    { label: 'Hospital 1', value: 'Hospital 1' }
-]
-
+const locationOptions = locations.map(loc => ({
+    label: loc.name,
+    value: loc.name
+}));
 
 export default function AddConsultationScreen() {
     const { add } = useConsultations();
@@ -170,7 +171,7 @@ export default function AddConsultationScreen() {
                             <Dropdown
                                 label="Médico"
                                 placeholder='Selecione o médico'
-                                options={medicos}
+                                options={doctorOptions}
                                 value={value}
                                 onSelect={onChange}
                             />
@@ -193,7 +194,7 @@ export default function AddConsultationScreen() {
                             <Dropdown
                                 label="Especialidade"
                                 placeholder='Selecione a especialidade'
-                                options={specialties}
+                                options={specialtyOptions}
                                 value={value}
                                 onSelect={onChange}
                             />
@@ -216,7 +217,7 @@ export default function AddConsultationScreen() {
                             <Dropdown
                                 label="Localização"
                                 placeholder='Selecione a localização'
-                                options={locations}
+                                options={locationOptions}
                                 value={value}
                                 onSelect={onChange}
                             />

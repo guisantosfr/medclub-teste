@@ -1,4 +1,4 @@
-const professionals = [
+const doctors = [
     {
         id: 1,
         name: 'Dr. Ana'
@@ -44,7 +44,7 @@ const locations = [
 ]
 
 export {
-    professionals,
+    doctors,
     specialties,
     locations
 }

@@ -5,6 +5,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../types/RootStackParamList'
 import { useConsultations } from "../contexts/ConsultationsContext";
 import { Appbar } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
@@ -30,6 +31,12 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         style: 'destructive',
         onPress: () => {
           remove(consultation.id)
+
+          Toast.show({
+            type: 'success',
+            text1: 'Consulta excluída com sucesso'
+          })
+
           navigation.popToTop()
         },
       },

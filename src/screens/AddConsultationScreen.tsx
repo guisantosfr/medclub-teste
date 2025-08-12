@@ -11,6 +11,7 @@ import { Dropdown } from 'react-native-paper-dropdown';
 import { useForm, Controller } from "react-hook-form"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 type FormData = {
     date: Date
@@ -36,7 +37,7 @@ const locations = [
 
 
 export default function AddConsultationScreen() {
-    const { add, consultations } = useConsultations();
+    const { add } = useConsultations();
     const navigation = useNavigation();
 
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -63,6 +64,12 @@ export default function AddConsultationScreen() {
 
     const onSubmit = (data: FormData) => {
         add(data);
+
+        Toast.show({
+            type: 'success',
+            text1: 'Consulta agendada com sucesso'
+        })
+
         navigation.goBack();
     }
 

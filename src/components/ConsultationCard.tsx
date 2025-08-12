@@ -6,7 +6,7 @@ type Props = {
     onPress?: () => void
 }
 
-export default function AppointmentCard({ item, onPress }: Props) {
+export default function ConsultationCard({ item, onPress }: Props) {
     return (
         <Card
             onPress={onPress}

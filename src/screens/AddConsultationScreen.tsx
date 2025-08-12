@@ -9,6 +9,8 @@ import {
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
 import { useForm, Controller } from "react-hook-form"
+import { useConsultations } from "../contexts/ConsultationsContext";
+import { useNavigation } from '@react-navigation/native';
 
 type FormData = {
     date: Date
@@ -34,6 +36,9 @@ const locations = [
 
 
 export default function AddConsultationScreen() {
+    const { add, consultations } = useConsultations();
+    const navigation = useNavigation();
+
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -56,7 +61,10 @@ export default function AddConsultationScreen() {
     const watchedDate = watch('date');
     const watchedTime = watch('time');
 
-    const onSubmit = (data: FormData) => console.log(data)
+    const onSubmit = (data: FormData) => {
+        add(data);
+        navigation.goBack();
+    }
 
     const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowDatePicker(false);

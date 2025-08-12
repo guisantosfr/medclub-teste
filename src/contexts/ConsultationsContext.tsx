@@ -20,7 +20,13 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
   }
 
   function add(data: Omit<Consultation, "id">) {
-    const newConsultation = { ...data, id: '999' };
+    // Convert Date objects to strings before storing
+    const newConsultation = { 
+      ...data, 
+      id: Date.now().toString(), // Better than hardcoded '999'
+      date: data.date instanceof Date ? data.date.toISOString().split('T')[0] : data.date,
+      time: data.time instanceof Date ? data.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : data.time
+    };
     setConsultations(prev => [...prev, newConsultation]);
   }
 

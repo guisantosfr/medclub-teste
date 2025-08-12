@@ -8,7 +8,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName='ConsultationsList'>
+    <Stack.Navigator 
+    initialRouteName='ConsultationsList'
+    screenOptions={{
+      headerShown: false
+    }}
+    >
       <Stack.Screen
         name="ConsultationsList"
         component={ConsultationsListScreen}

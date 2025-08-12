@@ -6,7 +6,7 @@ import type { RootStackParamList } from '../types/RootStackParamList'
 import { consultations } from '../utils/mockConsultations'
 import ConsultationCard from '../components/ConsultationCard';
 import { SafeAreaView } from "react-native-safe-area-context"
-import { AnimatedFAB } from "react-native-paper"
+import { AnimatedFAB, Appbar } from "react-native-paper"
 import { useState } from "react"
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
@@ -17,11 +17,11 @@ export default function ConsultationsListScreen() {
     const [isExtended, setIsExtended] = useState(true);
 
     const onScroll = ({ nativeEvent }) => {
-    const currentScrollPosition =
-      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+        const currentScrollPosition =
+            Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
-    setIsExtended(currentScrollPosition <= 0);
-  };
+        setIsExtended(currentScrollPosition <= 0);
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -33,6 +33,9 @@ export default function ConsultationsListScreen() {
                 </View>
             ) : (
                 <>
+                    <Appbar.Header>
+                        <Appbar.Content title="Minhas Consultas" />
+                    </Appbar.Header>
                     <FlatList
                         data={consultations}
                         keyExtractor={item => item.id.toString()}
@@ -49,7 +52,7 @@ export default function ConsultationsListScreen() {
                         icon={'plus'}
                         label={'Nova consulta'}
                         extended={isExtended}
-                        onPress={() => {navigation.navigate('AddConsultation')}}
+                        onPress={() => { navigation.navigate('AddConsultation') }}
                         animateFrom={'right'}
                         iconMode={'static'}
                         style={styles.fabStyle}
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
     emptyTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
     emptyText: { fontSize: 14, color: '#6b7280', textAlign: 'center' },
     cardList: {
-        maxHeight: '92.5%'
+        maxHeight: '85%'
     },
     fabStyle: {
         bottom: 60,

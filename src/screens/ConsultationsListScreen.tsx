@@ -1,11 +1,11 @@
-import { Button, FlatList, StyleSheet, Text, View } from "react-native"
+import { Button, FlatList, StyleSheet, View } from "react-native"
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/RootStackParamList'
 
 import ConsultationCard from '../components/ConsultationCard';
 import { SafeAreaView } from "react-native-safe-area-context"
-import { AnimatedFAB, Appbar } from "react-native-paper"
+import { AnimatedFAB, Text } from "react-native-paper"
 import { useState } from "react"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import EmptyState from "../components/EmptyState";
@@ -32,9 +32,12 @@ export default function ConsultationsListScreen() {
                 <EmptyState />
             ) : (
                 <>
-                    <Appbar.Header>
-                        <Appbar.Content title="Minhas Consultas" />
-                    </Appbar.Header>
+                    <Text 
+                    variant="titleLarge"
+                    style={styles.title}>
+                        Minhas consultas
+                        </Text>
+
                     <FlatList
                         data={consultations}
                         keyExtractor={item => item.id.toString()}
@@ -64,7 +67,9 @@ export default function ConsultationsListScreen() {
 
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f9fafb' },
+    container: { 
+        flex: 1 
+    },
     emptyWrap: {
         flex: 1,
         alignItems: 'center',
@@ -72,10 +77,21 @@ const styles = StyleSheet.create({
         gap: 6,
         paddingHorizontal: 24,
     },
-    emptyTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
-    emptyText: { fontSize: 14, color: '#6b7280', textAlign: 'center' },
+    emptyTitle: { 
+        fontSize: 18, 
+        fontWeight: '700', 
+        color: '#111827' 
+    },
+    emptyText: { 
+        fontSize: 14, 
+        color: '#6b7280', 
+        textAlign: 'center' 
+    },
+    title: {
+        padding: 24
+    },
     cardList: {
-        maxHeight: '85%'
+        flex: 1
     },
     fabStyle: {
         bottom: 60,

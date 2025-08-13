@@ -91,8 +91,10 @@ export default function AddConsultationScreen() {
     return (
         <>
             <Appbar.Header>
+                <Appbar.BackAction onPress={() => { navigation.goBack() }} />
                 <Appbar.Content title="Nova Consulta" />
             </Appbar.Header>
+            
             <ScrollView contentContainerStyle={styles.container}>
                 {/* Campo de Data */}
                 <Controller
@@ -167,7 +169,7 @@ export default function AddConsultationScreen() {
                         required: 'Selecione um médico',
                     }}
                     render={({ field: { onChange, value } }) => (
-                        <View style={styles.dropdown}>
+                        <View style={styles.input}>
                             <Dropdown
                                 label="Médico"
                                 placeholder='Selecione o médico'
@@ -190,7 +192,7 @@ export default function AddConsultationScreen() {
                         required: 'Selecione uma especialidade',
                     }}
                     render={({ field: { onChange, value } }) => (
-                        <View style={styles.dropdown}>
+                        <View style={styles.input}>
                             <Dropdown
                                 label="Especialidade"
                                 placeholder='Selecione a especialidade'
@@ -213,7 +215,7 @@ export default function AddConsultationScreen() {
                         required: 'Selecione uma localização',
                     }}
                     render={({ field: { onChange, value } }) => (
-                        <View style={styles.dropdown}>
+                        <View style={styles.input}>
                             <Dropdown
                                 label="Localização"
                                 placeholder='Selecione a localização'
@@ -239,21 +241,17 @@ export default function AddConsultationScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        padding: 16,
-        backgroundColor: '#f5f5f5'
+        flex: 1,
+        marginTop: 36
     },
     input: {
         marginBottom: 8,
-        width: '100%',
-        backgroundColor: '#fff',
+        width: '90%',
+        marginHorizontal: 'auto'
     },
     button: {
         marginTop: 24,
         width: '75%',
         marginHorizontal: 'auto'
-    },
-    dropdown: {
-        marginVertical: 16
     }
 });

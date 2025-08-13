@@ -12,7 +12,13 @@ export default function EmptyState() {
             style={styles.image}
             />
 
-            <Text variant="headlineSmall">Sem consultas</Text>
+            <Text variant="headlineSmall">Sem consultas no momento</Text>
+
+            <Text 
+            variant="bodyLarge"
+            style={styles.emptyDescription}>
+                Adicione sua primeira consulta {'\n'} para organizar seus atendimentos.
+            </Text>
 
             <Button 
             mode="contained" 
@@ -34,6 +40,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8
+    },
+    emptyDescription: {
+        textAlign: 'center',
+        paddingHorizontal: 12
     },
     button: {
         marginTop: 12,

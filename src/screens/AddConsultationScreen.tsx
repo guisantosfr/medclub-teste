@@ -112,6 +112,7 @@ export default function AddConsultationScreen() {
                                 value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
                                 onFocus={() => setShowDatePicker(true)}
                                 style={styles.input}
+                                mode="outlined"
                                 right={<TextInput.Icon icon="calendar-today" />}
                                 error={!!errors.date}
                             />
@@ -147,6 +148,7 @@ export default function AddConsultationScreen() {
                                 value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
                                 onFocus={() => setShowTimePicker(true)}
                                 style={styles.input}
+                                mode="outlined"
                                 right={<TextInput.Icon icon="clock-outline" />}
                                 error={!!errors.time}
                             />
@@ -180,6 +182,7 @@ export default function AddConsultationScreen() {
                                 label="Médico"
                                 placeholder='Selecione o médico'
                                 options={doctorOptions}
+                                mode='outlined'
                                 value={value}
                                 onSelect={onChange}
                             />
@@ -202,6 +205,7 @@ export default function AddConsultationScreen() {
                             <Dropdown
                                 label="Especialidade"
                                 placeholder='Selecione a especialidade'
+                                mode="outlined"
                                 options={specialtyOptions}
                                 value={value}
                                 onSelect={onChange}
@@ -225,6 +229,7 @@ export default function AddConsultationScreen() {
                             <Dropdown
                                 label="Localização"
                                 placeholder='Selecione a localização'
+                                mode="outlined"
                                 options={locationOptions}
                                 value={value}
                                 onSelect={onChange}

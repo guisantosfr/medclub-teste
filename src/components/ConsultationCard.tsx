@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Consultation } from '../types/Consultation'
-import { Avatar, Card, Text } from 'react-native-paper'
+import { Avatar, Card, Icon, Text } from 'react-native-paper'
 
 type Props = {
     item: Consultation
@@ -39,15 +39,24 @@ export default function ConsultationCard({ item, onPress }: Props) {
                     subtitleVariant='titleMedium'
                     subtitleStyle={styles.subtitle}
                     left={(props) => <Avatar.Icon {...props} icon="account" size={50} />}
-                    leftStyle={styles.cardIcon}
+                    leftStyle={styles.avatar}
                 ></Card.Title>
 
                 <Card.Content>
-                    <Text 
-                    variant='bodyLarge'
-                    style={styles.dateTime}>
-                        {formatDate(item.date)} - {item.time}
-                    </Text>
+                    <View style={styles.dateTimeContainer}>
+                        <View style={styles.dateTimeItem}>
+                            <Icon source="calendar" size={20} />
+                            <Text variant='bodyLarge'>
+                                {formatDate(item.date)}
+                            </Text>
+                        </View>
+                        <View style={styles.dateTimeItem}>
+                            <Icon source="clock-outline" size={20} />
+                            <Text variant='bodyLarge'>
+                                {item.time}
+                            </Text>
+                        </View>
+                    </View>
                 </Card.Content>
             </Card>
         </>
@@ -58,12 +67,18 @@ const styles = StyleSheet.create({
     subtitle: {
         color: 'gray'
     },
-    cardIcon: {
+    avatar: {
         marginRight: 32,
         marginTop: 32
     },
-    dateTime: {
-        position: 'relative',
-        left: 72
+    dateTimeContainer: {
+        flexDirection: 'row',
+        marginLeft: 72,
+        gap: 16
+    },
+    dateTimeItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6
     }
 })

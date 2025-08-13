@@ -21,7 +21,8 @@ export default function EmptyState() {
             </Text>
 
             <Button 
-            mode="contained" 
+            mode="contained"
+            icon="plus"
             onPress={() => { navigation.navigate('AddConsultation')}}
             style={styles.button}>
                 Nova Consulta

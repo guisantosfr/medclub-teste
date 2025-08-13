@@ -242,7 +242,10 @@ export default function AddConsultationScreen() {
                     name="location"
                 />
 
-                <Button mode="contained" onPress={handleSubmit(onSubmit)} style={styles.button}>
+                <Button 
+                mode="contained"
+                icon="calendar" 
+                onPress={handleSubmit(onSubmit)} style={styles.button}>
                     Agendar Consulta
                 </Button>
             </ScrollView>

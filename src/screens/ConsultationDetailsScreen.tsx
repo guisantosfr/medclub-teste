@@ -118,17 +118,20 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-    padding: 16,
     gap: 16
   },
   
   doctorCard: {
-    paddingVertical: 12,
-    marginVertical: 6
+    padding: 12,
+    marginVertical: 6,
+    width: '90%',
+    marginHorizontal: 'auto'
   },
 
   consultationInfoCard: {
-    marginVertical: 6
+    marginVertical: 6,
+    width: '90%',
+    marginHorizontal: 'auto'
   },
 
   subtitle: {

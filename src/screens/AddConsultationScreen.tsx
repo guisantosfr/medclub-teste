@@ -15,8 +15,8 @@ import Toast from 'react-native-toast-message';
 import { doctors, specialties, locations } from '../utils/mockData'; 
 
 type FormData = {
-    date: Date
-    time: Date
+    date: Date | null
+    time: Date | null
     doctor: string
     specialty: string
     location: string
@@ -44,6 +44,9 @@ export default function AddConsultationScreen() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const {
         control,
         handleSubmit,
@@ -52,8 +55,8 @@ export default function AddConsultationScreen() {
         watch
     } = useForm<FormData>({
         defaultValues: {
-            date: new Date(),
-            time: new Date(),
+            date: null,
+            time: null,
             doctor: '',
             specialty: '',
             location: ''
@@ -106,7 +109,7 @@ export default function AddConsultationScreen() {
                         <>
                             <TextInput
                                 label="Data"
-                                value={field.value.toLocaleDateString('pt-BR')}
+                                value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
                                 onFocus={() => setShowDatePicker(true)}
                                 style={styles.input}
                                 right={<TextInput.Icon icon="calendar-today" />}
@@ -122,9 +125,10 @@ export default function AddConsultationScreen() {
                 
                 {showDatePicker && (
                     <DateTimePicker
-                        value={watchedDate}
+                        value={watchedDate || new Date()}
                         mode="date"
                         display="default"
+                        minimumDate={today}
                         onChange={handleDateChange}
                     />
                 )}
@@ -139,7 +143,8 @@ export default function AddConsultationScreen() {
                         <>
                             <TextInput
                                 label="Hora"
-                                value={field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                placeholder="Selecione um horário"
+                                value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
                                 onFocus={() => setShowTimePicker(true)}
                                 style={styles.input}
                                 right={<TextInput.Icon icon="clock-outline" />}
@@ -155,9 +160,10 @@ export default function AddConsultationScreen() {
                 
                 {showTimePicker && (
                     <DateTimePicker
-                        value={watchedTime}
+                        value={watchedTime || new Date()}
                         mode="time"
-                        display="default"
+                        display="spinner"
+                        minuteInterval={30}
                         onChange={handleTimeChange}
                     />
                 )}

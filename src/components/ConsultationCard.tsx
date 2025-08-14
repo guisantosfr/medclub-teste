@@ -29,7 +29,7 @@ function formatDate(dateStr: string) {
 export default function ConsultationCard({ item, onPress }: Props) {
     return (
         <>
-            <Card style={styles.card}>
+            <Card style={styles.card} onPress={onPress}>
                 <Card.Title
                     title={item.doctor}
                     titleVariant='titleLarge'
@@ -56,13 +56,6 @@ export default function ConsultationCard({ item, onPress }: Props) {
                         </View>
                     </View>
                 </Card.Content>
-
-                <Card.Actions>
-                    <Button
-                        mode='contained'
-                        onPress={onPress}
-                        style={styles.detailButton}>Ver detalhes</Button>
-                </Card.Actions>
             </Card>
         </>
     )

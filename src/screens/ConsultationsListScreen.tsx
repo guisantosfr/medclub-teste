@@ -5,7 +5,7 @@ import type { RootStackParamList } from '../types/RootStackParamList'
 
 import ConsultationCard from '../components/ConsultationCard';
 import { SafeAreaView } from "react-native-safe-area-context"
-import { AnimatedFAB, Text } from "react-native-paper"
+import { AnimatedFAB, Text, useTheme } from "react-native-paper"
 import { useState } from "react"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import EmptyState from "../components/EmptyState";
@@ -18,6 +18,7 @@ export default function ConsultationsListScreen() {
 
     const [isExtended, setIsExtended] = useState(true);
 
+    const theme = useTheme()
 
     const onScroll = ({ nativeEvent }) => {
         const currentScrollPosition =
@@ -57,7 +58,8 @@ export default function ConsultationsListScreen() {
                         onPress={() => { navigation.navigate('AddConsultation') }}
                         animateFrom={'right'}
                         iconMode={'static'}
-                        style={styles.fabStyle}
+                        color="#eee"
+                        style={[styles.fabStyle, { backgroundColor: theme.colors.primary} ]}
                     />
                 </>
             )}

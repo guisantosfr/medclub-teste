@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../types/RootStackParamList'
 import { useConsultations } from "../contexts/ConsultationsContext";
-import { Appbar, Avatar, Button, Card, Text } from 'react-native-paper';
+import { Appbar, Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
@@ -34,6 +34,8 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 
     return version2;
   }
+
+  const theme = useTheme()
 
   if (!consultation) {
     return (
@@ -104,7 +106,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 
       <Button 
       mode='contained' 
-      buttonColor='#ef4444'
+      buttonColor={theme.colors.error}
       onPress={handleDelete}
       style={styles.deleteButton}
       icon="trash-can"

@@ -26,7 +26,7 @@ type FormData = {
 
 const specialtyOptions = specialties.map(spec => ({
     label: spec.name,
-    value: spec.id.toString() // Mudamos para usar o ID
+    value: spec.id.toString()
 }));
 
 const locationOptions = locations.map(loc => ({
@@ -46,13 +46,31 @@ export default function AddConsultationScreen() {
 
     const theme = useTheme()
 
+    // Função para validar se o horário é no passado
+    const validateDateTime = (date: Date | null, time: Date | null) => {
+        if (!date || !time) return true; // Se não tem data ou hora, deixa outras validações cuidarem
+
+        const now = new Date();
+        const selectedDateTime = new Date(date);
+        selectedDateTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
+
+        // Se a data selecionada é hoje, verifica se o horário é maior que o atual
+        const isToday = date.toDateString() === now.toDateString();
+        if (isToday && selectedDateTime <= now) {
+            return 'Não é possível agendar para um horário no passado';
+        }
+
+        return true;
+    };
+
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
         watch,
-        reset
+        reset,
+        trigger // Adicionar trigger para revalidar
     } = useForm<FormData>({
         defaultValues: {
             date: null,
@@ -83,9 +101,16 @@ export default function AddConsultationScreen() {
     // Reset do campo médico quando a especialidade muda
     useEffect(() => {
         if (watchedSpecialty) {
-            setValue('doctor', ''); // Limpa a seleção de médico
+            setValue('doctor', '');
         }
     }, [watchedSpecialty, setValue]);
+
+    // Revalidar quando data ou hora mudam
+    useEffect(() => {
+        if (watchedDate && watchedTime) {
+            trigger('time'); // Revalida o campo de tempo
+        }
+    }, [watchedDate, watchedTime, trigger]);
 
     const onSubmit = (data: FormData) => {
         // Converte o ID da especialidade de volta para o nome antes de salvar
@@ -167,6 +192,7 @@ export default function AddConsultationScreen() {
                     control={control}
                     rules={{
                         required: 'Selecione um horário',
+                        validate: () => validateDateTime(watchedDate, watchedTime)
                     }}
                     render={({ field }) => (
                         <>
@@ -237,7 +263,7 @@ export default function AddConsultationScreen() {
                                 mode='outlined'
                                 value={value}
                                 onSelect={onChange}
-                                disabled={!watchedSpecialty} // Desabilitado até selecionar especialidade
+                                disabled={!watchedSpecialty}
                             />
                             <HelperText type="error" visible={!!errors.doctor}>
                                 {errors.doctor?.message}
@@ -261,7 +287,7 @@ export default function AddConsultationScreen() {
                                 options={locationOptions}
                                 value={value}
                                 onSelect={onChange}
-                                disabled={!watchedSpecialty} // Desabilitado até selecionar especialidade
+                                disabled={!watchedSpecialty}
                             />
                             <HelperText type="error" visible={!!errors.location}>
                                 {errors.location?.message}
@@ -274,7 +300,8 @@ export default function AddConsultationScreen() {
                 <Button
                     mode="contained"
                     icon="calendar"
-                    onPress={handleSubmit(onSubmit)} style={styles.button}>
+                    onPress={handleSubmit(onSubmit)} 
+                    style={styles.button}>
                     Agendar Consulta
                 </Button>
             </ScrollView>

@@ -8,7 +8,7 @@ export default function EmptyState() {
     return (
         <View style={styles.emptyWrap}>
             <Image
-            source={require('../../assets/calendar.png')}
+            source={require('../../assets/no-data.png')}
             style={styles.image}
             />
 
@@ -33,8 +33,9 @@ export default function EmptyState() {
 
 const styles = StyleSheet.create({
     image: {
-        width: 150,
-        height: 150
+        width: 253,
+        height: 247,
+        marginBottom: 8
     },
     emptyWrap: {
         flex: 1,

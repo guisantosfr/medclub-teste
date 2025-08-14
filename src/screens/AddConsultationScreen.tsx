@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import {
     Appbar,
     TextInput,
     Button,
-    HelperText
+    HelperText,
+    Text
 } from 'react-native-paper';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
@@ -22,14 +23,9 @@ type FormData = {
     location: string
 }
 
-const doctorOptions = doctors.map(doc => ({
-    label: doc.name,
-    value: doc.name
-}));
-
 const specialtyOptions = specialties.map(spec => ({
     label: spec.name,
-    value: spec.name
+    value: spec.id.toString() // Mudamos para usar o ID
 }));
 
 const locationOptions = locations.map(loc => ({
@@ -52,7 +48,8 @@ export default function AddConsultationScreen() {
         handleSubmit,
         formState: { errors },
         setValue,
-        watch
+        watch,
+        reset
     } = useForm<FormData>({
         defaultValues: {
             date: null,
@@ -65,9 +62,37 @@ export default function AddConsultationScreen() {
 
     const watchedDate = watch('date');
     const watchedTime = watch('time');
+    const watchedSpecialty = watch('specialty');
+
+    // Filtra os médicos com base na especialidade selecionada
+    const filteredDoctors = useMemo(() => {
+        if (!watchedSpecialty) return [];
+        
+        const selectedSpecialtyId = parseInt(watchedSpecialty);
+        return doctors
+            .filter(doctor => doctor.specialtyId === selectedSpecialtyId)
+            .map(doctor => ({
+                label: doctor.name,
+                value: doctor.name
+            }));
+    }, [watchedSpecialty]);
+
+    // Reset do campo médico quando a especialidade muda
+    useEffect(() => {
+        if (watchedSpecialty) {
+            setValue('doctor', ''); // Limpa a seleção de médico
+        }
+    }, [watchedSpecialty, setValue]);
 
     const onSubmit = (data: FormData) => {
-        add(data);
+        // Converte o ID da especialidade de volta para o nome antes de salvar
+        const selectedSpecialty = specialties.find(spec => spec.id.toString() === data.specialty);
+        const submitData = {
+            ...data,
+            specialty: selectedSpecialty?.name || ''
+        };
+        
+        add(submitData);
 
         Toast.show({
             type: 'success',
@@ -99,7 +124,8 @@ export default function AddConsultationScreen() {
             </Appbar.Header>
             
             <ScrollView contentContainerStyle={styles.container}>
-                {/* Campo de Data */}
+                <Text variant='titleLarge' style={styles.title}>Data e horário</Text>
+
                 <Controller
                     control={control}
                     rules={{
@@ -134,7 +160,6 @@ export default function AddConsultationScreen() {
                     />
                 )}
 
-                {/* Campo de Hora */}
                 <Controller
                     control={control}
                     rules={{
@@ -170,31 +195,8 @@ export default function AddConsultationScreen() {
                     />
                 )}
 
-                {/* Campo Médico */}
-                <Controller
-                    control={control}
-                    rules={{
-                        required: 'Selecione um médico',
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                        <View style={styles.input}>
-                            <Dropdown
-                                label="Médico"
-                                placeholder='Selecione o médico'
-                                options={doctorOptions}
-                                mode='outlined'
-                                value={value}
-                                onSelect={onChange}
-                            />
-                            <HelperText type="error" visible={!!errors.doctor}>
-                                {errors.doctor?.message}
-                            </HelperText>
-                        </View>
-                    )}
-                    name="doctor"
-                />
+                <Text variant='titleLarge' style={styles.title}>Informações do médico</Text>
 
-                {/* Campo Especialidade */}
                 <Controller
                     control={control}
                     rules={{
@@ -217,8 +219,31 @@ export default function AddConsultationScreen() {
                     )}
                     name="specialty"
                 />
+                
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione um médico',
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                        <View style={styles.input}>
+                            <Dropdown
+                                label="Médico"
+                                placeholder='Selecione o médico'
+                                options={filteredDoctors}
+                                mode='outlined'
+                                value={value}
+                                onSelect={onChange}
+                                disabled={!watchedSpecialty} // Desabilitado até selecionar especialidade
+                            />
+                            <HelperText type="error" visible={!!errors.doctor}>
+                                {errors.doctor?.message}
+                            </HelperText>
+                        </View>
+                    )}
+                    name="doctor"
+                />
 
-                {/* Campo Localização */}
                 <Controller
                     control={control}
                     rules={{
@@ -233,6 +258,7 @@ export default function AddConsultationScreen() {
                                 options={locationOptions}
                                 value={value}
                                 onSelect={onChange}
+                                disabled={!watchedSpecialty} // Desabilitado até selecionar especialidade
                             />
                             <HelperText type="error" visible={!!errors.location}>
                                 {errors.location?.message}
@@ -257,6 +283,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 36
+    },
+    title: {
+        textAlign: 'center',
+        marginBottom: 8
     },
     input: {
         marginBottom: 8,

@@ -127,13 +127,15 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 6,
     width: '90%',
-    marginHorizontal: 'auto'
+    marginHorizontal: 'auto',
+    backgroundColor: '#fff'
   },
 
   consultationInfoCard: {
     marginVertical: 6,
     width: '90%',
-    marginHorizontal: 'auto'
+    marginHorizontal: 'auto',
+    backgroundColor: '#fff'
   },
 
   subtitle: {

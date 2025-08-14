@@ -5,7 +5,8 @@ import {
     TextInput,
     Button,
     HelperText,
-    Text
+    Text,
+    useTheme
 } from 'react-native-paper';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
@@ -13,7 +14,7 @@ import { useForm, Controller } from "react-hook-form"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import { doctors, specialties, locations } from '../utils/mockData'; 
+import { doctors, specialties, locations } from '../utils/mockData';
 
 type FormData = {
     date: Date | null
@@ -43,6 +44,8 @@ export default function AddConsultationScreen() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const theme = useTheme()
+
     const {
         control,
         handleSubmit,
@@ -67,7 +70,7 @@ export default function AddConsultationScreen() {
     // Filtra os médicos com base na especialidade selecionada
     const filteredDoctors = useMemo(() => {
         if (!watchedSpecialty) return [];
-        
+
         const selectedSpecialtyId = parseInt(watchedSpecialty);
         return doctors
             .filter(doctor => doctor.specialtyId === selectedSpecialtyId)
@@ -91,7 +94,7 @@ export default function AddConsultationScreen() {
             ...data,
             specialty: selectedSpecialty?.name || ''
         };
-        
+
         add(submitData);
 
         Toast.show({
@@ -122,7 +125,7 @@ export default function AddConsultationScreen() {
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
                 <Appbar.Content title="Nova Consulta" />
             </Appbar.Header>
-            
+
             <ScrollView contentContainerStyle={styles.container}>
                 <Text variant='titleLarge' style={styles.title}>Data e horário</Text>
 
@@ -149,7 +152,7 @@ export default function AddConsultationScreen() {
                     )}
                     name="date"
                 />
-                
+
                 {showDatePicker && (
                     <DateTimePicker
                         value={watchedDate || new Date()}
@@ -184,7 +187,7 @@ export default function AddConsultationScreen() {
                     )}
                     name="time"
                 />
-                
+
                 {showTimePicker && (
                     <DateTimePicker
                         value={watchedTime || new Date()}
@@ -219,7 +222,7 @@ export default function AddConsultationScreen() {
                     )}
                     name="specialty"
                 />
-                
+
                 <Controller
                     control={control}
                     rules={{
@@ -268,10 +271,10 @@ export default function AddConsultationScreen() {
                     name="location"
                 />
 
-                <Button 
-                mode="contained"
-                icon="calendar" 
-                onPress={handleSubmit(onSubmit)} style={styles.button}>
+                <Button
+                    mode="contained"
+                    icon="calendar"
+                    onPress={handleSubmit(onSubmit)} style={styles.button}>
                     Agendar Consulta
                 </Button>
             </ScrollView>

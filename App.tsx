@@ -8,11 +8,10 @@ import Toast from 'react-native-toast-message';
 const theme = {
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#0e5fd6'
+    primary: '#0e5fd6',
+    background: '#FFFFFF'
   },
 };
-
-console.log(theme.colors)
 
 export default function App() {
   return (

@@ -63,7 +63,8 @@ export default function ConsultationCard({ item, onPress }: Props) {
 
 const styles = StyleSheet.create({
     card: {
-        paddingVertical: 8
+        paddingVertical: 8,
+        backgroundColor: '#fff'
     },
     subtitle: {
         color: 'gray'

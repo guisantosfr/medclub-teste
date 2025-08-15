@@ -8,6 +8,7 @@ interface ConsultationsContextData {
   getById: (id: string) => Consultation | undefined;
   add: (data: Omit<Consultation, "id">) => void;
   remove: (id: string) => void;
+  cancel: (id: string) => void;
 }
 
 const ConsultationsContext = createContext<ConsultationsContextData | undefined>(undefined);
@@ -45,12 +46,23 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
     setConsultations(prev => prev.filter(c => c.id !== id));
   }
 
+  // ...existing code...
+  function cancel(id: string) {
+    setConsultations(prev => prev.map(consultation => 
+      consultation.id === id 
+        ? { ...consultation, canceled: true }
+        : consultation
+    ));
+  }
+// ...existing code...
+
   return (
     <ConsultationsContext.Provider value={{ 
       consultations: sortedConsultations,
       getById,
       add,
-      remove
+      remove,
+      cancel
     }}>
       {children}
     </ConsultationsContext.Provider>

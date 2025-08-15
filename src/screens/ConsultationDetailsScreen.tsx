@@ -1,21 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, Alert, Pressable } from 'react-native'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../types/RootStackParamList'
 import { useConsultations } from "../contexts/ConsultationsContext";
-import { Appbar, Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
+import { Appbar, Avatar, Button, Card, Dialog, Portal, Text, useTheme } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
 export default function ConsultationDetailsScreen({ route, navigation }: Props) {
   const { id } = route.params
-  const { getById, remove } = useConsultations();
+  const { getById, cancel } = useConsultations();
 
   const consultation = getById(id);
 
-  // COMPONENTIZAR ESSA FUNÇÃO
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
+
   function formatDate(dateStr: string) {
     const [y, m, d] = dateStr.split("-").map(Number);
     const date = new Date(y, m - 1, d);
@@ -45,24 +50,15 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
     )
   }
 
-  const handleDelete = () => {
-    Alert.alert('Excluir consulta', 'Tem certeza que deseja excluir esta consulta?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir',
-        style: 'destructive',
-        onPress: () => {
-          remove(consultation.id)
+  const handleCancel = () => {
+    cancel(consultation.id)
 
-          Toast.show({
-            type: 'success',
-            text1: 'Consulta excluída com sucesso'
-          })
+    Toast.show({
+      type: 'success',
+      text1: 'Consulta cancelada com sucesso'
+    })
 
-          navigation.popToTop()
-        },
-      },
-    ])
+    navigation.popToTop()
   }
 
   return (
@@ -104,25 +100,52 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         </Card.Content>
       </Card>
 
-      <Button 
-      mode='contained' 
-      buttonColor={theme.colors.error}
-      onPress={handleDelete}
-      style={styles.deleteButton}
-      icon="trash-can"
-      >
-        Excluir consulta
-      </Button>
+      <View style={styles.buttons}>
+        <Button
+          mode='contained'
+          //buttonColor={theme.colors.error}
+          //onPress={handleDelete}
+          style={styles.deleteButton}
+          icon="calendar"
+        >
+          Reagendar
+        </Button>
+
+        <Button
+          mode='contained'
+          buttonColor={theme.colors.error}
+          onPress={showDialog}
+          style={styles.deleteButton}
+          icon="cancel"
+        >
+          Cancelar
+        </Button>
+
+      </View>
+
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title>Cancelar consulta</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">Tem certeza que deseja cancelar esta consulta?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Não</Button>
+            <Button onPress={handleCancel}>Sim, cancelar</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
     gap: 16
   },
-  
+
   doctorCard: {
     padding: 12,
     marginVertical: 6,
@@ -152,9 +175,13 @@ const styles = StyleSheet.create({
     marginVertical: 8
   },
 
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+
   deleteButton: {
-    width: '75%',
-    marginHorizontal: 'auto',
+    width: '40%',
     marginTop: 8
   },
 })

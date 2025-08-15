@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet} from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
@@ -205,26 +205,38 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
       <Card style={styles.consultationInfoCard}>
         <Card.Content>
           <View style={styles.consultationInfo}>
-            <Text variant="bodyLarge">
+            <View style={styles.infoLabel}>
               <Icon source="calendar" size={20} />
-              Data
-            </Text>
+
+              <Text variant="bodyLarge" style={styles.labelText}>
+                Data
+              </Text>
+            </View>
+
             <Text variant="titleMedium">{formatDate(consultation.date)}</Text>
           </View>
 
           <View style={styles.consultationInfo}>
-            <Text variant="bodyLarge">
+            <View style={styles.infoLabel}>
               <Icon source="clock" size={20} />
-              Horário
-            </Text>
+
+              <Text variant="bodyLarge" style={styles.labelText}>
+                Horário
+              </Text>
+            </View>
+
             <Text variant="titleMedium">{consultation.time}</Text>
           </View>
 
           <View style={styles.consultationInfo}>
-            <Text variant="bodyLarge">
+            <View style={styles.infoLabel}>
               <Icon source="map-marker" size={20} />
-              Localização
-            </Text>
+
+              <Text variant="bodyLarge" style={styles.labelText}>
+                Localização
+              </Text>
+            </View>
+
             <Text variant="titleMedium">{consultation.location}</Text>
           </View>
 
@@ -275,7 +287,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
             <Text variant="bodyMedium" style={styles.dialogDescription}>
               Selecione a nova data e horário para a consulta:
             </Text>
-            
+
             <View style={styles.inputContainer}>
               <Controller
                 control={control}
@@ -381,19 +393,29 @@ const styles = StyleSheet.create({
     marginHorizontal: 'auto',
     backgroundColor: '#fff',
   },
-  
+
   subtitle: {
     color: 'gray'
   },
-  
+
   avatar: {
     marginRight: 32,
   },
-  
+
   consultationInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: 8
+  },
+
+  infoLabel: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  labelText: {
+    marginLeft: 8
   },
 
   buttons: {

@@ -8,6 +8,7 @@ import { useConsultations } from "../contexts/ConsultationsContext";
 import { Appbar, Avatar, Button, Card, Dialog, Icon, Portal, Text, TextInput, HelperText, useTheme } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { useForm, Controller } from "react-hook-form";
+import { Consultation } from '../types/Consultation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
@@ -114,6 +115,12 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 
     return version2;
   }
+
+  const isPastConsultation = (consultation: Consultation) => {
+    const now = new Date();
+    const consultationDateTime = new Date(`${consultation.date}T${consultation.time}`);
+    return consultationDateTime < now;
+  };
 
   const theme = useTheme()
 
@@ -247,7 +254,10 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
       {
         consultation.canceled ?
           <Text variant='titleMedium' style={styles.canceledInfo}>Esta consulta foi cancelada</Text>
-        :
+          :
+          isPastConsultation(consultation) ? 
+            <Text variant='titleMedium' style={styles.canceledInfo}>Esta consulta já foi realizada</Text>
+          :
           <View style={styles.buttons}>
             <Button
               mode='contained'

@@ -5,4 +5,5 @@ export type Consultation = {
   doctor: string
   specialty: string
   location: string
+  canceled?: boolean
 }

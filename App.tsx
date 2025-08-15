@@ -1,22 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
-import { MD3LightTheme, PaperProvider } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ConsultationsProvider } from './src/contexts/ConsultationsContext';
 import Toast from 'react-native-toast-message';
-
-const theme = {
-  colors: {
-    ...MD3LightTheme.colors,
-    primary: '#0e5fd6',
-    background: '#FFFFFF',
-    surface: '#rgba(255, 251, 254, 1)'
-  },
-};
+import { useColorScheme } from 'react-native';
+import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
+import { useMemo } from 'react';
 
 export default function App() {
+  const colorScheme = useColorScheme();
+  const { theme } = useMaterial3Theme({ sourceColor: '#0e5fd6'});
+
+  const appTheme = useMemo(
+    () =>
+      colorScheme === 'dark' ? { ...MD3DarkTheme, colors: theme.dark } : { ...MD3LightTheme, colors: theme.light },
+    [colorScheme, theme]
+  );
+
   return (
-    <PaperProvider theme={theme}>
+    <PaperProvider theme={appTheme}>
       <ConsultationsProvider>
         <StatusBar style="auto" />
 

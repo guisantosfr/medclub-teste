@@ -243,27 +243,34 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         </Card.Content>
       </Card>
 
-      <View style={styles.buttons}>
-        <Button
-          mode='contained'
-          onPress={showRescheduleDialog}
-          style={styles.actionButton}
-          icon="calendar"
-        >
-          Reagendar
-        </Button>
 
-        <Button
-          mode='contained'
-          buttonColor={theme.colors.error}
-          onPress={showDialog}
-          style={styles.actionButton}
-          icon="cancel"
-        >
-          Cancelar
-        </Button>
+      {
+        consultation.canceled ?
+          <Text variant='titleMedium' style={styles.canceledInfo}>Esta consulta foi cancelada</Text>
+        :
+          <View style={styles.buttons}>
+            <Button
+              mode='contained'
+              onPress={showRescheduleDialog}
+              style={styles.actionButton}
+              icon="calendar"
+            >
+              Reagendar
+            </Button>
 
-      </View>
+            <Button
+              mode='contained'
+              buttonColor={theme.colors.error}
+              onPress={showDialog}
+              style={styles.actionButton}
+              icon="cancel"
+            >
+              Cancelar
+            </Button>
+
+          </View>
+      }
+
 
       {/* Modal de Cancelamento */}
       <Portal>
@@ -443,4 +450,8 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: 'transparent',
   },
+
+  canceledInfo: {
+    textAlign: 'center'
+  }
 })

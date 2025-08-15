@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo } from "react";
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from "react";
 import { mockConsultations } from "../utils/mockConsultations";
 import { Consultation } from "../types/Consultation";
-//import { v4 as uuidv4 } from "uuid"; // npm install uuid
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ConsultationsContextData {
   consultations: Consultation[];
@@ -14,8 +14,49 @@ interface ConsultationsContextData {
 
 const ConsultationsContext = createContext<ConsultationsContextData | undefined>(undefined);
 
+const STORAGE_KEY = "consultations";
+const INIT_KEY = "consultations_initialized";
+
 export function ConsultationsProvider({ children }: { children: ReactNode }) {
-  const [consultations, setConsultations] = useState<Consultation[]>(mockConsultations);
+  const [consultations, setConsultations] = useState<Consultation[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const initialized = await AsyncStorage.getItem(INIT_KEY);
+
+        if (!initialized) {
+          // First run → load mock data and store it
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(mockConsultations));
+          await AsyncStorage.setItem(INIT_KEY, "true");
+          setConsultations(mockConsultations);
+        } else {
+          // Subsequent runs → load from storage
+          const saved = await AsyncStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            setConsultations(JSON.parse(saved));
+          } else {
+            setConsultations([]); // fallback to empty list
+          }
+        }
+      } catch (err) {
+        console.error("Error loading consultations:", err);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const initialized = await AsyncStorage.getItem(INIT_KEY);
+        if (initialized) {
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(consultations));
+        }
+      } catch (err) {
+        console.error("Error saving consultations:", err);
+      }
+    })();
+  }, [consultations]);
 
   const sortedConsultations = useMemo(() => {
     return [...consultations].sort((a, b) => {

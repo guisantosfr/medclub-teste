@@ -9,6 +9,7 @@ interface ConsultationsContextData {
   add: (data: Omit<Consultation, "id">) => void;
   remove: (id: string) => void;
   cancel: (id: string) => void;
+  reschedule: (id: string, date: Date | string, time: Date | string) => void;
 }
 
 const ConsultationsContext = createContext<ConsultationsContextData | undefined>(undefined);
@@ -46,7 +47,6 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
     setConsultations(prev => prev.filter(c => c.id !== id));
   }
 
-  // ...existing code...
   function cancel(id: string) {
     setConsultations(prev => prev.map(consultation => 
       consultation.id === id 
@@ -54,7 +54,19 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
         : consultation
     ));
   }
-// ...existing code...
+
+  function reschedule(id: string, date: Date | string, time: Date | string) {
+  setConsultations(prev => prev.map(consultation => {
+    if (consultation.id === id) {
+      return {
+        ...consultation,
+        date: date instanceof Date ? date.toISOString().split('T')[0] : date,
+        time: time instanceof Date ? time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : time
+      };
+    }
+    return consultation;
+  }));
+}
 
   return (
     <ConsultationsContext.Provider value={{ 
@@ -62,7 +74,8 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
       getById,
       add,
       remove,
-      cancel
+      cancel,
+      reschedule
     }}>
       {children}
     </ConsultationsContext.Provider>

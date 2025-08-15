@@ -152,79 +152,7 @@ export default function AddConsultationScreen() {
             </Appbar.Header>
 
             <ScrollView contentContainerStyle={styles.container}>
-                <Text variant='titleLarge' style={styles.title}>Data e horário</Text>
-
-                <Controller
-                    control={control}
-                    rules={{
-                        required: 'Selecione uma data',
-                    }}
-                    render={({ field }) => (
-                        <>
-                            <TextInput
-                                label="Data"
-                                value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
-                                onFocus={() => setShowDatePicker(true)}
-                                style={styles.input}
-                                mode="outlined"
-                                right={<TextInput.Icon icon="calendar-today" />}
-                                error={!!errors.date}
-                            />
-                            <HelperText type="error" visible={!!errors.date}>
-                                {errors.date?.message}
-                            </HelperText>
-                        </>
-                    )}
-                    name="date"
-                />
-
-                {showDatePicker && (
-                    <DateTimePicker
-                        value={watchedDate || new Date()}
-                        mode="date"
-                        display="default"
-                        minimumDate={today}
-                        onChange={handleDateChange}
-                    />
-                )}
-
-                <Controller
-                    control={control}
-                    rules={{
-                        required: 'Selecione um horário',
-                        validate: () => validateDateTime(watchedDate, watchedTime)
-                    }}
-                    render={({ field }) => (
-                        <>
-                            <TextInput
-                                label="Hora"
-                                placeholder="Selecione um horário"
-                                value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
-                                onFocus={() => setShowTimePicker(true)}
-                                style={styles.input}
-                                mode="outlined"
-                                right={<TextInput.Icon icon="clock-outline" />}
-                                error={!!errors.time}
-                            />
-                            <HelperText type="error" visible={!!errors.time}>
-                                {errors.time?.message}
-                            </HelperText>
-                        </>
-                    )}
-                    name="time"
-                />
-
-                {showTimePicker && (
-                    <DateTimePicker
-                        value={watchedTime || new Date()}
-                        mode="time"
-                        display="spinner"
-                        minuteInterval={30}
-                        onChange={handleTimeChange}
-                    />
-                )}
-
-                <Text variant='titleLarge' style={styles.title}>Informações do médico</Text>
+                <Text variant='titleMedium' style={styles.title}>Selecione o médico</Text>
 
                 <Controller
                     control={control}
@@ -296,6 +224,79 @@ export default function AddConsultationScreen() {
                     )}
                     name="location"
                 />
+
+                <Text variant='titleMedium' style={styles.title}>Selecione data e horário</Text>
+
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione uma data',
+                    }}
+                    render={({ field }) => (
+                        <>
+                            <TextInput
+                                label="Data"
+                                value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
+                                onFocus={() => setShowDatePicker(true)}
+                                style={styles.input}
+                                mode="outlined"
+                                right={<TextInput.Icon icon="calendar-today" />}
+                                error={!!errors.date}
+                            />
+                            <HelperText type="error" visible={!!errors.date}>
+                                {errors.date?.message}
+                            </HelperText>
+                        </>
+                    )}
+                    name="date"
+                />
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={watchedDate || new Date()}
+                        mode="date"
+                        display="default"
+                        minimumDate={today}
+                        onChange={handleDateChange}
+                    />
+                )}
+
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Selecione um horário',
+                        validate: () => validateDateTime(watchedDate, watchedTime)
+                    }}
+                    render={({ field }) => (
+                        <>
+                            <TextInput
+                                label="Hora"
+                                placeholder="Selecione um horário"
+                                value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
+                                onFocus={() => setShowTimePicker(true)}
+                                style={styles.input}
+                                mode="outlined"
+                                right={<TextInput.Icon icon="clock-outline" />}
+                                error={!!errors.time}
+                            />
+                            <HelperText type="error" visible={!!errors.time}>
+                                {errors.time?.message}
+                            </HelperText>
+                        </>
+                    )}
+                    name="time"
+                />
+
+                {showTimePicker && (
+                    <DateTimePicker
+                        value={watchedTime || new Date()}
+                        mode="time"
+                        display="spinner"
+                        minuteInterval={30}
+                        onChange={handleTimeChange}
+                    />
+                )}
+
 
                 <Button
                     mode="contained"

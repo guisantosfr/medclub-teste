@@ -10,16 +10,25 @@ import { useMemo } from 'react';
 
 export default function App() {
   const colorScheme = useColorScheme();
-  const { theme } = useMaterial3Theme({ sourceColor: '#0e5fd6'});
+  // const { theme } = useMaterial3Theme({ sourceColor: '#0e5fd6'});
 
-  const appTheme = useMemo(
-    () =>
-      colorScheme === 'dark' ? { ...MD3DarkTheme, colors: theme.dark } : { ...MD3LightTheme, colors: theme.light },
-    [colorScheme, theme]
-  );
+  // const appTheme = useMemo(
+  //   () =>
+  //     colorScheme === 'dark' ? { ...MD3DarkTheme, colors: theme.dark } : { ...MD3LightTheme, colors: theme.light },
+  //   [colorScheme, theme]
+  // );
+
+  const theme = {
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: '#0e5fd6',
+    background: '#FFFFFF'
+  },
+};
+
 
   return (
-    <PaperProvider theme={appTheme}>
+    <PaperProvider theme={theme}>
       <ConsultationsProvider>
         <StatusBar style="auto" />
 

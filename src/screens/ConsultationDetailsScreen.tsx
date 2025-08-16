@@ -143,15 +143,17 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
 
   const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setShowDatePicker(false);
-    if (selectedDate) {
+    if (selectedDate && event.type === 'set') {
       setValue('date', selectedDate);
+      trigger('date');
     }
   };
 
   const handleTimeChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
     setShowTimePicker(false);
-    if (selectedTime) {
+    if (selectedTime && event.type === 'set') {
       setValue('time', selectedTime);
+      trigger('time');
     }
   };
 
@@ -220,34 +222,34 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         consultation.canceled ?
           <Text variant='titleMedium' style={styles.canceledInfo}>Esta consulta foi cancelada</Text>
           :
-          isPastConsultation(consultation) ? 
+          isPastConsultation(consultation) ?
             <Text variant='titleMedium' style={styles.canceledInfo}>Esta consulta já foi realizada</Text>
-          :
-          <View style={styles.buttons}>
-            <Button
-              mode='contained'
-              onPress={showRescheduleDialog}
-              style={styles.actionButton}
-              icon="calendar"
-            >
-              Reagendar
-            </Button>
+            :
+            <View style={styles.buttons}>
+              <Button
+                mode='contained'
+                onPress={showRescheduleDialog}
+                style={styles.actionButton}
+                icon="calendar"
+              >
+                Reagendar
+              </Button>
 
-            <Button
-              mode='contained'
-              buttonColor={theme.colors.error}
-              onPress={showDialog}
-              style={styles.actionButton}
-              icon="cancel"
-            >
-              Cancelar
-            </Button>
+              <Button
+                mode='contained'
+                buttonColor={theme.colors.error}
+                onPress={showDialog}
+                style={styles.actionButton}
+                icon="cancel"
+              >
+                Cancelar
+              </Button>
 
-          </View>
+            </View>
       }
 
       <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
+        <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
           <Dialog.Title>Cancelar consulta</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">Tem certeza que deseja cancelar esta consulta?</Text>
@@ -260,7 +262,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
       </Portal>
 
       <Portal>
-        <Dialog visible={rescheduleVisible} onDismiss={hideRescheduleDialog} style={styles.rescheduleDialog}>
+        <Dialog visible={rescheduleVisible} onDismiss={hideRescheduleDialog} style={styles.dialog}>
           <Dialog.Title>Reagendar consulta</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium" style={styles.dialogDescription}>
@@ -274,20 +276,27 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
                   required: 'Selecione uma data',
                 }}
                 render={({ field }) => (
-                  <>
-                    <TextInput
-                      label="Nova data"
-                      value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
-                      onFocus={() => setShowDatePicker(true)}
-                      style={styles.input}
+                  <View style={styles.input}>
+                    <Button
                       mode="outlined"
-                      right={<TextInput.Icon icon="calendar-today" />}
-                      error={!!errors.date}
-                    />
+                      icon="calendar-today"
+                      onPress={() => setShowDatePicker(true)}
+                      style={[
+                        styles.dateTimeButton,
+                        errors.date && styles.errorButton
+                      ]}
+                      contentStyle={styles.buttonContent}
+                      labelStyle={[
+                        styles.buttonLabel,
+                        !field.value && styles.placeholderLabel
+                      ]}
+                    >
+                      {field.value ? field.value.toLocaleDateString('pt-BR') : 'Selecione uma data'}
+                    </Button>
                     <HelperText type="error" visible={!!errors.date}>
                       {errors.date?.message}
                     </HelperText>
-                  </>
+                  </View>
                 )}
                 name="date"
               />
@@ -309,21 +318,27 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
                   validate: () => validateDateTime(watchedDate, watchedTime)
                 }}
                 render={({ field }) => (
-                  <>
-                    <TextInput
-                      label="Novo horário"
-                      placeholder="Selecione um horário"
-                      value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
-                      onFocus={() => setShowTimePicker(true)}
-                      style={styles.input}
+                  <View style={styles.input}>
+                    <Button
                       mode="outlined"
-                      right={<TextInput.Icon icon="clock-outline" />}
-                      error={!!errors.time}
-                    />
+                      icon="clock-outline"
+                      onPress={() => setShowTimePicker(true)}
+                      style={[
+                        styles.dateTimeButton,
+                        errors.time && styles.errorButton
+                      ]}
+                      contentStyle={styles.buttonContent}
+                      labelStyle={[
+                        styles.buttonLabel,
+                        !field.value && styles.placeholderLabel
+                      ]}
+                    >
+                      {field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Selecione um horário'}
+                    </Button>
                     <HelperText type="error" visible={!!errors.time}>
                       {errors.time?.message}
                     </HelperText>
-                  </>
+                  </View>
                 )}
                 name="time"
               />
@@ -400,8 +415,9 @@ const styles = StyleSheet.create({
     width: '40%',
     marginTop: 8
   },
-  rescheduleDialog: {
+  dialog: {
     margin: 20,
+    backgroundColor: '#fff'
   },
   dialogDescription: {
     marginBottom: 16,
@@ -411,5 +427,26 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     gap: 12,
+  },
+  dateTimeButton: {
+    height: 56,
+    justifyContent: 'flex-start',
+  },
+  errorButton: {
+    borderColor: '#B00020',
+    borderWidth: 2,
+  },
+  buttonContent: {
+    height: 56,
+    justifyContent: 'flex-start',
+    paddingLeft: 12,
+  },
+  buttonLabel: {
+    fontSize: 16,
+    textAlign: 'left',
+    flex: 1,
+  },
+  placeholderLabel: {
+    color: '#757575',
   }
 })

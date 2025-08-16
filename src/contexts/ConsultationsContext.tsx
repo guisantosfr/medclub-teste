@@ -18,7 +18,7 @@ const STORAGE_KEY = "consultations";
 const INIT_KEY = "consultations_initialized";
 
 export function ConsultationsProvider({ children }: { children: ReactNode }) {
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [consultations, setConsultations] = useState(mockConsultations);
 
   useEffect(() => {
     (async () => {

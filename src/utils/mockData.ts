@@ -19,9 +19,9 @@ const specialties = [
 ]
 
 const locations = [
-    { id: 1, name: "Clínica Central" },
-    { id: 2, name: "Hospital São Lucas" },
-    { id: 3, name: "Centro Médico Zona Sul" }
+    { id: 1, name: "Hospital São Marcos" },
+    { id: 2, name: "Hospital Getúlio Vargas" },
+    { id: 3, name: "Med Imagem" }
 ]
 
 export {

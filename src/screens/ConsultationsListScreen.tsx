@@ -1,18 +1,14 @@
-import { FlatList, SectionList, StyleSheet, View } from "react-native"
+import { useMemo, useState } from "react"
+import { SectionList, StyleSheet, View, SafeAreaView } from "react-native"
+import { AnimatedFAB, Text, useTheme } from "react-native-paper"
+import { Tabs, TabScreen, TabsProvider } from "react-native-paper-tabs";
 import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import type { RootStackParamList } from '../types/RootStackParamList'
-
 import ConsultationCard from '../components/ConsultationCard';
-import { SafeAreaView } from "react-native-safe-area-context"
-import { AnimatedFAB, Text, useTheme } from "react-native-paper"
-import { useMemo, useState } from "react"
 import { useConsultations } from "../contexts/ConsultationsContext";
 import EmptyState from "../components/EmptyState";
 import { Consultation } from "../types/Consultation";
-
-import { Tabs, TabScreen, TabsProvider } from "react-native-paper-tabs";
-import ConsultationList from "../components/ConsultationList";
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
 
@@ -174,7 +170,6 @@ export default function ConsultationsListScreen() {
                         <Tabs>
                             <TabScreen
                             label="Próximas"
-                            //badge={true}
                             badge={getUpcomingConsultationsQuantity()}
                             >
                                 {renderConsultationsList(groupedConsultations.upcoming)}
@@ -206,34 +201,7 @@ export default function ConsultationsListScreen() {
     )
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    emptyWrap: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 6,
-        paddingHorizontal: 24,
-    },
-    emptyTitle: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#111827'
-    },
-    emptyText: {
-        fontSize: 14,
-        color: '#6b7280',
-        textAlign: 'center'
-    },
-    title: {
-        padding: 24
-    },
-    cardList: {
-        flex: 1
-    },
     emptyTabContainer: {
         flex: 1,
         alignItems: 'center',
@@ -245,20 +213,25 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     sectionHeader: {
-        // paddingVertical: 8,
         paddingHorizontal: 8,
         marginTop: 16,
-        //marginBottom: 8,
-        //borderRadius: 8,
     },
     sectionHeaderText: {
         fontWeight: '600',
         color: '#374151',
     },
+    cardList: {
+        flex: 1
+    },
+    container: {
+        flex: 1
+    },
+    title: {
+        padding: 24
+    },
     fabStyle: {
         bottom: 60,
         right: 20,
         position: 'absolute',
-    },
-
+    }
 })

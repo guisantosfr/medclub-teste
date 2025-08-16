@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import {
-    Appbar,
-    TextInput,
-    Button,
-    HelperText,
-    Text,
-    useTheme
-} from 'react-native-paper';
+import { Appbar, TextInput, Button, HelperText, Text } from 'react-native-paper';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
 import { useForm, Controller } from "react-hook-form"
-import { useConsultations } from "../contexts/ConsultationsContext";
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { doctors, specialties, locations } from '../utils/mockData';
+import { useConsultations } from "../contexts/ConsultationsContext";
+import { validateDateTime } from '../helpers/validateDateTime';
 
 type FormData = {
     date: Date | null
@@ -44,33 +38,13 @@ export default function AddConsultationScreen() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const theme = useTheme()
-
-    // Função para validar se o horário é no passado
-    const validateDateTime = (date: Date | null, time: Date | null) => {
-        if (!date || !time) return true; // Se não tem data ou hora, deixa outras validações cuidarem
-
-        const now = new Date();
-        const selectedDateTime = new Date(date);
-        selectedDateTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
-
-        // Se a data selecionada é hoje, verifica se o horário é maior que o atual
-        const isToday = date.toDateString() === now.toDateString();
-        if (isToday && selectedDateTime <= now) {
-            return 'Não é possível agendar para um horário no passado';
-        }
-
-        return true;
-    };
-
     const {
         control,
         handleSubmit,
         formState: { errors },
         setValue,
         watch,
-        reset,
-        trigger // Adicionar trigger para revalidar
+        trigger
     } = useForm<FormData>({
         defaultValues: {
             date: null,
@@ -108,7 +82,7 @@ export default function AddConsultationScreen() {
     // Revalidar quando data ou hora mudam
     useEffect(() => {
         if (watchedDate && watchedTime) {
-            trigger('time'); // Revalida o campo de tempo
+            trigger('time');
         }
     }, [watchedDate, watchedTime, trigger]);
 

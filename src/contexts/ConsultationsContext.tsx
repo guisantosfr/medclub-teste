@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockConsultations } from "../utils/mockConsultations";
 import { Consultation } from "../types/Consultation";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ConsultationsContextData {
   consultations: Consultation[];
@@ -97,17 +97,17 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
   }
 
   function reschedule(id: string, date: Date | string, time: Date | string) {
-  setConsultations(prev => prev.map(consultation => {
-    if (consultation.id === id) {
-      return {
-        ...consultation,
-        date: date instanceof Date ? date.toISOString().split('T')[0] : date,
-        time: time instanceof Date ? time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : time
-      };
-    }
-    return consultation;
-  }));
-}
+    setConsultations(prev => prev.map(consultation => {
+      if (consultation.id === id) {
+        return {
+          ...consultation,
+          date: date instanceof Date ? date.toISOString().split('T')[0] : date,
+          time: time instanceof Date ? time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : time
+        };
+      }
+      return consultation;
+    }));
+  }
 
   return (
     <ConsultationsContext.Provider value={{ 

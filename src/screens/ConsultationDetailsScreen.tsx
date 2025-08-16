@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
+import { Appbar, Avatar, Button, Card, Dialog, Icon, Portal, Text, TextInput, HelperText, useTheme } from 'react-native-paper';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { useForm, Controller } from "react-hook-form";
+import Toast from 'react-native-toast-message';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-
 import { RootStackParamList } from '../types/RootStackParamList'
 import { useConsultations } from "../contexts/ConsultationsContext";
-import { Appbar, Avatar, Button, Card, Dialog, Icon, Portal, Text, TextInput, HelperText, useTheme } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
-import { useForm, Controller } from "react-hook-form";
 import { Consultation } from '../types/Consultation';
+import { formatDate } from '../helpers/formatDate'
+import { validateDateTime } from '../helpers/validateDateTime';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
@@ -34,23 +35,6 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  // Função para validar se o horário é no passado
-  const validateDateTime = (date: Date | null, time: Date | null) => {
-    if (!date || !time) return true; // Se não tem data ou hora, deixa outras validações cuidarem
-
-    const now = new Date();
-    const selectedDateTime = new Date(date);
-    selectedDateTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
-
-    // Se a data selecionada é hoje, verifica se o horário é maior que o atual
-    const isToday = date.toDateString() === now.toDateString();
-    if (isToday && selectedDateTime <= now) {
-      return 'Não é possível agendar para um horário no passado';
-    }
-
-    return true;
-  };
-
   const {
     control,
     handleSubmit,
@@ -69,10 +53,9 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
   const watchedDate = watch('date');
   const watchedTime = watch('time');
 
-  // Revalidar quando data ou hora mudam
   useEffect(() => {
     if (watchedDate && watchedTime) {
-      trigger('time'); // Revalida o campo de tempo
+      trigger('time');
     }
   }, [watchedDate, watchedTime, trigger]);
 
@@ -89,6 +72,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
       currentTime.setHours(hours, minutes, 0, 0);
       setValue('time', currentTime);
     }
+
     setRescheduleVisible(true);
   };
 
@@ -96,25 +80,6 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
     setRescheduleVisible(false);
     reset();
   };
-
-  function formatDate(dateStr: string) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    const date = new Date(y, m - 1, d);
-
-    const day = String(date.getDate()).padStart(2, "0");
-    const monthIndex = date.getMonth();
-    const monthNum = String(monthIndex + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    const currentYear = new Date().getFullYear();
-
-    const showYear = year !== currentYear;
-
-    const version2 = showYear
-      ? `${day}/${monthNum}/${year}`
-      : `${day}/${monthNum}`;
-
-    return version2;
-  }
 
   const isPastConsultation = (consultation: Consultation) => {
     const now = new Date();
@@ -133,7 +98,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
   }
 
   const handleCancel = () => {
-    cancel(consultation.id)
+    cancel(consultation.id.toString())
 
     Toast.show({
       type: 'success',
@@ -281,8 +246,6 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
           </View>
       }
 
-
-      {/* Modal de Cancelamento */}
       <Portal>
         <Dialog visible={visible} onDismiss={hideDialog}>
           <Dialog.Title>Cancelar consulta</Dialog.Title>
@@ -296,7 +259,6 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
         </Dialog>
       </Portal>
 
-      {/* Modal de Reagendamento */}
       <Portal>
         <Dialog visible={rescheduleVisible} onDismiss={hideRescheduleDialog} style={styles.rescheduleDialog}>
           <Dialog.Title>Reagendar consulta</Dialog.Title>
@@ -395,7 +357,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 16
   },
-
   doctorCard: {
     padding: 12,
     marginVertical: 6,
@@ -403,65 +364,52 @@ const styles = StyleSheet.create({
     marginHorizontal: 'auto',
     backgroundColor: '#fff'
   },
-
+  subtitle: {
+    color: 'gray'
+  },
+  avatar: {
+    marginRight: 32,
+  },
   consultationInfoCard: {
     marginVertical: 6,
     width: '90%',
     marginHorizontal: 'auto',
     backgroundColor: '#fff',
   },
-
-  subtitle: {
-    color: 'gray'
-  },
-
-  avatar: {
-    marginRight: 32,
-  },
-
   consultationInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 8
   },
-
   infoLabel: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
   },
-
   labelText: {
     marginLeft: 8
   },
-
+  canceledInfo: {
+    textAlign: 'center'
+  },
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-evenly'
   },
-
   actionButton: {
     width: '40%',
     marginTop: 8
   },
-
   rescheduleDialog: {
     margin: 20,
   },
-
   dialogDescription: {
     marginBottom: 16,
   },
-
-  inputContainer: {
-    gap: 12,
-  },
-
   input: {
     backgroundColor: 'transparent',
   },
-
-  canceledInfo: {
-    textAlign: 'center'
+  inputContainer: {
+    gap: 12,
   }
 })

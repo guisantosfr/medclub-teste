@@ -2,55 +2,28 @@ export const mockConsultations = [
     {
         date: "2025-08-15",
         doctor: "Dr. João Silva",
-        id: "1755211114196",
+        id: "1",
         location: "Clínica Central",
-        specialty: "Cardiologia",
+        specialty: "Cardiologista",
         time: "16:00",
         canceled: false
     },
     {
-        date: "2025-08-15",
-        doctor: "Dr. João Silva",
-        id: "1755211114197",
-        location: "Clínica Central",
-        specialty: "Cardiologia",
-        time: "16:30",
-        canceled: false
-    },
-    {
         date: "2025-08-16",
-        doctor: "Dr. João Silva",
-        id: "1755211114198",
-        location: "Clínica Central",
-        specialty: "Cardiologia",
-        time: "19:40",
-        canceled: false
-    },
-    {
-        date: "2025-08-16",
-        doctor: "Dr. João Silva",
-        id: "1755211114199",
-        location: "Clínica Central",
-        specialty: "Cardiologia",
-        time: "19:50",
+        doctor: "Dra. Ana Beatriz Costa",
+        id: "2",
+        location: "Hospital São Lucas",
+        specialty: "Dermatologista",
+        time: "17:30",
         canceled: false
     },
     {
         date: "2025-08-17",
-        doctor: "Dr. João Silva",
-        id: "1755211114200",
+        doctor: "Dra. Fernanda Oliveira",
+        id: "3",
         location: "Clínica Central",
-        specialty: "Cardiologia",
-        time: "19:40",
-        canceled: false
+        specialty: "Ortopedista",
+        time: "09:00",
+        canceled: true
     },
-    {
-        date: "2025-08-18",
-        doctor: "Dr. João Silva",
-        id: "1755211114201",
-        location: "Clínica Central",
-        specialty: "Cardiologia",
-        time: "19:50",
-        canceled: false
-    }
 ]

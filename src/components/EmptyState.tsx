@@ -1,6 +1,6 @@
-import { useNavigation } from "@react-navigation/native"
 import { Image, StyleSheet, View } from "react-native"
 import { Button, Text } from "react-native-paper"
+import { useNavigation } from "@react-navigation/native"
 
 export default function EmptyState() {
     const navigation = useNavigation();
@@ -32,16 +32,16 @@ export default function EmptyState() {
 }
 
 const styles = StyleSheet.create({
-    image: {
-        width: 253,
-        height: 247,
-        marginBottom: 8
-    },
     emptyWrap: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8
+    },
+    image: {
+        width: 253,
+        height: 247,
+        marginBottom: 8
     },
     emptyDescription: {
         textAlign: 'center',

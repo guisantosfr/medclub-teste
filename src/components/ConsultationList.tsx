@@ -1,25 +1,26 @@
 import { FlatList, StyleSheet, View } from "react-native";
-import ConsultationCard from "./ConsultationCard";
 import { useNavigation } from "@react-navigation/native";
+import ConsultationCard from "./ConsultationCard";
+import { Consultation }  from '../types/Consultation';
 
-export default function ConsultationList({ consultations, onScroll }){
+export default function ConsultationList({ consultations, onScroll }: { consultations: Consultation[], onScroll: any}) {
     const navigation = useNavigation()
-    
+
     return (
         <FlatList
-                        data={consultations}
-                        keyExtractor={item => item.id.toString()}
-                        ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-                        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
-                        style={styles.cardList}
-                        renderItem={({ item }) => (
-                            <ConsultationCard 
-                                item={item} 
-                                onPress={() => navigation.navigate('ConsultationDetails', { id: item.id.toString() })} 
-                            />
-                        )}
-                        onScroll={onScroll}
-                    />
+            data={consultations}
+            keyExtractor={item => item.id.toString()}
+            ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+            contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+            style={styles.cardList}
+            renderItem={({ item }) => (
+                <ConsultationCard
+                    item={item}
+                    onPress={() => navigation.navigate('ConsultationDetails', { id: item.id.toString() })}
+                />
+            )}
+            onScroll={onScroll}
+        />
 
     )
 }

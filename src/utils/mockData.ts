@@ -13,9 +13,9 @@ const doctors = [
 ]
 
 const specialties = [
-    { id: 1, name: "Cardiologia" },
-    { id: 2, name: "Dermatologia" },
-    { id: 3, name: "Ortopedia" }
+    { id: 1, name: "Cardiologista" },
+    { id: 2, name: "Dermatologista" },
+    { id: 3, name: "Ortopedista" }
 ]
 
 const locations = [

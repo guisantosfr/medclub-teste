@@ -2,7 +2,11 @@ import { Image, StyleSheet, View } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { useNavigation } from "@react-navigation/native"
 
-export default function EmptyState() {
+type Props = {
+    onButtonClick: () => void;
+}
+
+export default function EmptyState({ onButtonClick }: Props) {
     const navigation = useNavigation();
 
     return (
@@ -23,7 +27,7 @@ export default function EmptyState() {
             <Button 
             mode="contained"
             icon="plus"
-            onPress={() => { navigation.navigate('AddConsultation')}}
+            onPress={onButtonClick}
             style={styles.button}>
                 Nova Consulta
             </Button>

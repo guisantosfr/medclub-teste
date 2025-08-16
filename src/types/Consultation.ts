@@ -1,5 +1,5 @@
 export type Consultation = {
-  id: number
+  id: string
   date: string
   time: string
   doctor: string

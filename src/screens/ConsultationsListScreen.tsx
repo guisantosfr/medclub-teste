@@ -9,6 +9,7 @@ import ConsultationCard from '../components/ConsultationCard';
 import { useConsultations } from "../contexts/ConsultationsContext";
 import EmptyState from "../components/EmptyState";
 import { Consultation } from "../types/Consultation";
+import { getSectionTitle, isPastConsultation, isUpcomingConsultation } from '../helpers/dateTimeHelpers';
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'ConsultationsList'>
 
@@ -20,54 +21,11 @@ export default function ConsultationsListScreen() {
 
     const theme = useTheme()
 
-    const formatDate = (dateString: string): string => {
-        const [year, month, day] = dateString.split('-').map(Number);
-        const date = new Date(year, month - 1, day);
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        // Normalizar datas para comparação (sem hora)
-        const normalizeDate = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        const normalizedDate = normalizeDate(date);
-        const normalizedToday = normalizeDate(today);
-        const normalizedTomorrow = normalizeDate(tomorrow);
-        const normalizedYesterday = normalizeDate(yesterday);
-
-        if (normalizedDate.getTime() === normalizedToday.getTime()) {
-            return 'Hoje';
-        } else if (normalizedDate.getTime() === normalizedTomorrow.getTime()) {
-            return 'Amanhã';
-        } else if (normalizedDate.getTime() === normalizedYesterday.getTime()) {
-            return 'Ontem';
-        } else {
-            return date.toLocaleDateString('pt-BR', { 
-                weekday: 'long', 
-                day: '2-digit', 
-                month: 'long' 
-            });
-        }
-    };
-
     const onScroll = ({ nativeEvent }) => {
         const currentScrollPosition =
             Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
         setIsExtended(currentScrollPosition <= 0);
-    };
-
-    const isPastConsultation = (consultation: Consultation) => {
-        const now = new Date();
-        const consultationDateTime = new Date(`${consultation.date}T${consultation.time}`);
-        return consultationDateTime < now;
-    };
-
-    const isUpcomingConsultation = (consultation: Consultation) => {
-        const now = new Date();
-        const consultationDateTime = new Date(`${consultation.date}T${consultation.time}`);
-        return consultationDateTime >= now && !consultation.canceled;
     };
 
     const groupConsultationsByDate = (consultationsList: Consultation[]) => {
@@ -84,20 +42,20 @@ export default function ConsultationsListScreen() {
         return Object.keys(grouped)
             .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
             .map(date => ({
-                title: formatDate(date),
+                title: getSectionTitle(date),
                 data: grouped[date].sort((a, b) => a.time.localeCompare(b.time))
             }));
     };
 
     const groupedConsultations = useMemo(() => {
         const filtered = {
-            past: consultations.filter(consultation => 
+            past: consultations.filter(consultation =>
                 isPastConsultation(consultation) && !consultation.canceled
             ),
-            upcoming: consultations.filter(consultation => 
+            upcoming: consultations.filter(consultation =>
                 isUpcomingConsultation(consultation)
             ),
-            canceled: consultations.filter(consultation => 
+            canceled: consultations.filter(consultation =>
                 consultation.canceled
             )
         };
@@ -109,10 +67,10 @@ export default function ConsultationsListScreen() {
         };
     }, [consultations]);
 
-    const getUpcomingConsultationsQuantity = () => {
-        return consultations.filter(consultation => 
-                isUpcomingConsultation(consultation)).length
-    }
+    const upcomingConsultationsCount = useMemo(() =>
+        groupedConsultations.upcoming.reduce((acc, section) => acc + section.data.length, 0),
+        [groupedConsultations.upcoming]
+    );
 
     const renderConsultationsList = (consultationsSections) => {
         if (consultationsSections.length === 0) {
@@ -128,11 +86,11 @@ export default function ConsultationsListScreen() {
         return (
             <SectionList
                 sections={consultationsSections}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <ConsultationCard 
-                        item={item} 
-                        onPress={() => navigation.navigate('ConsultationDetails', { id: item.id.toString() })} 
+                    <ConsultationCard
+                        item={item}
+                        onPress={() => navigation.navigate('ConsultationDetails', { id: item.id })}
                     />
                 )}
                 renderSectionHeader={({ section: { title } }) => (
@@ -155,7 +113,7 @@ export default function ConsultationsListScreen() {
     return (
         <SafeAreaView style={styles.container}>
             {consultations.length === 0 ? (
-                <EmptyState />
+                <EmptyState onButtonClick={() => navigation.navigate('AddConsultation')} />
             ) : (
                 <>
                     <Text
@@ -169,8 +127,8 @@ export default function ConsultationsListScreen() {
                     >
                         <Tabs>
                             <TabScreen
-                            label="Próximas"
-                            badge={getUpcomingConsultationsQuantity()}
+                                label="Próximas"
+                                badge={upcomingConsultationsCount > 0 ? upcomingConsultationsCount : undefined}
                             >
                                 {renderConsultationsList(groupedConsultations.upcoming)}
                             </TabScreen>
@@ -184,7 +142,7 @@ export default function ConsultationsListScreen() {
                             </TabScreen>
                         </Tabs>
                     </TabsProvider>
-                    
+
                     <AnimatedFAB
                         icon={'plus'}
                         label={'Nova consulta'}

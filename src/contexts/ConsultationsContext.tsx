@@ -17,45 +17,39 @@ const ConsultationsContext = createContext<ConsultationsContextData | undefined>
 const STORAGE_KEY = "consultations";
 const INIT_KEY = "consultations_initialized";
 
+const loadConsultations = async (): Promise<Consultation[]> => {
+  try {
+    const initialized = await AsyncStorage.getItem(INIT_KEY);
+    if (!initialized) {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(mockConsultations));
+      await AsyncStorage.setItem(INIT_KEY, "true");
+      return mockConsultations;
+    }
+
+    const saved = await AsyncStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (err) {
+    console.error("Error loading consultations:", err);
+    return []; // Retorna um array vazio em caso de erro
+  }
+};
+
 export function ConsultationsProvider({ children }: { children: ReactNode }) {
   const [consultations, setConsultations] = useState(mockConsultations);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const initialized = await AsyncStorage.getItem(INIT_KEY);
-
-        if (!initialized) {
-          // First run → load mock data and store it
-          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(mockConsultations));
-          await AsyncStorage.setItem(INIT_KEY, "true");
-          setConsultations(mockConsultations);
-        } else {
-          // Subsequent runs → load from storage
-          const saved = await AsyncStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            setConsultations(JSON.parse(saved));
-          } else {
-            setConsultations([]); // fallback to empty list
-          }
-        }
-      } catch (err) {
-        console.error("Error loading consultations:", err);
-      }
-    })();
+    // Apenas carrega na montagem
+    loadConsultations().then(setConsultations);
   }, []);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const initialized = await AsyncStorage.getItem(INIT_KEY);
-        if (initialized) {
-          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(consultations));
-        }
-      } catch (err) {
+    // Salva sempre que 'consultations' mudar (exceto na montagem inicial)
+    // Para evitar salvar a lista vazia antes de carregar, podemos adicionar uma verificação
+    if (consultations.length > 0) {
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(consultations)).catch(err => {
         console.error("Error saving consultations:", err);
-      }
-    })();
+      });
+    }
   }, [consultations]);
 
   const sortedConsultations = useMemo(() => {
@@ -63,21 +57,21 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
       // Compare dates first
       const dateComparison = new Date(a.date).getTime() - new Date(b.date).getTime();
       if (dateComparison !== 0) return dateComparison;
-      
+
       // If dates are equal, compare times
       return a.time.localeCompare(b.time);
     });
   }, [consultations]);
-  
+
   function getById(id: string) {
     return consultations.find(c => c.id === id);
   }
 
   function add(data: Omit<Consultation, "id">) {
     // Convert Date objects to strings before storing
-    const newConsultation = { 
-      ...data, 
-      id: Date.now().toString(), // Better than hardcoded '999'
+    const newConsultation = {
+      ...data,
+      id: Date.now().toString(),
       date: data.date instanceof Date ? data.date.toISOString().split('T')[0] : data.date,
       time: data.time instanceof Date ? data.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : data.time
     };
@@ -89,8 +83,8 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
   }
 
   function cancel(id: string) {
-    setConsultations(prev => prev.map(consultation => 
-      consultation.id === id 
+    setConsultations(prev => prev.map(consultation =>
+      consultation.id === id
         ? { ...consultation, canceled: true }
         : consultation
     ));
@@ -110,7 +104,7 @@ export function ConsultationsProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ConsultationsContext.Provider value={{ 
+    <ConsultationsContext.Provider value={{
       consultations: sortedConsultations,
       getById,
       add,

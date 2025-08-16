@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 import { Avatar, Card, Icon, Text } from 'react-native-paper'
 import { Consultation } from '../types/Consultation'
-import { formatDate } from '../helpers/formatDate'
+import { formatDate } from '../helpers/dateTimeHelpers'
 
 type Props = {
     item: Consultation

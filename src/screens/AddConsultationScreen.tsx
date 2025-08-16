@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Appbar, TextInput, Button, HelperText, Text } from 'react-native-paper';
+import { Appbar, Button, HelperText, Text } from 'react-native-paper';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-paper-dropdown';
 import { useForm, Controller } from "react-hook-form"
@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { doctors, specialties, locations } from '../utils/mockData';
 import { useConsultations } from "../contexts/ConsultationsContext";
-import { validateDateTime } from '../helpers/validateDateTime';
+import { validateDateTime } from '../helpers/dateTimeHelpers';
 
 type FormData = {
     date: Date | null
@@ -289,7 +289,7 @@ export default function AddConsultationScreen() {
                 <Button
                     mode="contained"
                     icon="calendar"
-                    onPress={handleSubmit(onSubmit)} 
+                    onPress={handleSubmit(onSubmit)}
                     style={styles.button}>
                     Agendar Consulta
                 </Button>
@@ -300,8 +300,9 @@ export default function AddConsultationScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        marginTop: 36
+        flexGrow: 1,
+        marginTop: 36,
+        paddingBottom: 36
     },
     title: {
         textAlign: 'center',
@@ -310,12 +311,12 @@ const styles = StyleSheet.create({
     input: {
         marginBottom: 8,
         width: '90%',
-        marginHorizontal: 'auto'
+        alignSelf: 'center'
     },
     button: {
         marginTop: 24,
         width: '75%',
-        marginHorizontal: 'auto'
+        alignSelf: 'center'
     },
     dateTimeButton: {
         height: 56,

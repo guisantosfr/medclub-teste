@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Appbar, Avatar, Button, Card, Dialog, Icon, Portal, Text, TextInput, HelperText, useTheme } from 'react-native-paper';
+import { Appbar, Avatar, Button, Card, Dialog, Icon, Portal, Text, HelperText, useTheme } from 'react-native-paper';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useForm, Controller } from "react-hook-form";
 import Toast from 'react-native-toast-message';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { RootStackParamList } from '../types/RootStackParamList'
 import { useConsultations } from "../contexts/ConsultationsContext";
-import { Consultation } from '../types/Consultation';
-import { formatDate } from '../helpers/formatDate'
-import { validateDateTime } from '../helpers/validateDateTime';
+import { formatDate, isPastConsultation, validateDateTime } from '../helpers/dateTimeHelpers'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConsultationDetails'>
 
@@ -64,13 +62,17 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
       // Parse da data atual da consulta (formato YYYY-MM-DD)
       const [year, month, day] = consultation.date.split('-').map(Number);
       const currentDate = new Date(year, month - 1, day);
-      setValue('date', currentDate);
 
       // Parse do horário atual da consulta (formato HH:MM)
       const [hours, minutes] = consultation.time.split(':').map(Number);
       const currentTime = new Date();
       currentTime.setHours(hours, minutes, 0, 0);
-      setValue('time', currentTime);
+
+      reset({
+        date: currentDate,
+        time: currentTime
+      });
+
     }
 
     setRescheduleVisible(true);
@@ -79,12 +81,6 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
   const hideRescheduleDialog = () => {
     setRescheduleVisible(false);
     reset();
-  };
-
-  const isPastConsultation = (consultation: Consultation) => {
-    const now = new Date();
-    const consultationDateTime = new Date(`${consultation.date}T${consultation.time}`);
-    return consultationDateTime < now;
   };
 
   const theme = useTheme()
@@ -98,7 +94,7 @@ export default function ConsultationDetailsScreen({ route, navigation }: Props) 
   }
 
   const handleCancel = () => {
-    cancel(consultation.id.toString())
+    cancel(consultation.id)
 
     Toast.show({
       type: 'success',
@@ -376,7 +372,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 6,
     width: '90%',
-    marginHorizontal: 'auto',
+    alignSelf: 'center',
     backgroundColor: '#fff'
   },
   subtitle: {
@@ -388,7 +384,7 @@ const styles = StyleSheet.create({
   consultationInfoCard: {
     marginVertical: 6,
     width: '90%',
-    marginHorizontal: 'auto',
+    alignSelf: 'center',
     backgroundColor: '#fff',
   },
   consultationInfo: {

@@ -227,7 +227,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     title: {
-        padding: 24
+        padding: 24,
+        marginTop: 24
     },
     fabStyle: {
         bottom: 60,

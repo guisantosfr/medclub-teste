@@ -106,15 +106,17 @@ export default function AddConsultationScreen() {
 
     const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
         setShowDatePicker(false);
-        if (selectedDate) {
+        if (selectedDate && event.type === 'set') {
             setValue('date', selectedDate);
+            trigger('date');
         }
     };
 
     const handleTimeChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
         setShowTimePicker(false);
-        if (selectedTime) {
+        if (selectedTime && event.type === 'set') {
             setValue('time', selectedTime);
+            trigger('time');
         }
     };
 
@@ -207,20 +209,27 @@ export default function AddConsultationScreen() {
                         required: 'Selecione uma data',
                     }}
                     render={({ field }) => (
-                        <>
-                            <TextInput
-                                label="Data"
-                                value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
-                                onFocus={() => setShowDatePicker(true)}
-                                style={styles.input}
+                        <View style={styles.input}>
+                            <Button
                                 mode="outlined"
-                                right={<TextInput.Icon icon="calendar-today" />}
-                                error={!!errors.date}
-                            />
+                                icon="calendar-today"
+                                onPress={() => setShowDatePicker(true)}
+                                style={[
+                                    styles.dateTimeButton,
+                                    errors.date && styles.errorButton
+                                ]}
+                                contentStyle={styles.buttonContent}
+                                labelStyle={[
+                                    styles.buttonLabel,
+                                    !field.value && styles.placeholderLabel
+                                ]}
+                            >
+                                {field.value ? field.value.toLocaleDateString('pt-BR') : 'Selecione uma data'}
+                            </Button>
                             <HelperText type="error" visible={!!errors.date}>
                                 {errors.date?.message}
                             </HelperText>
-                        </>
+                        </View>
                     )}
                     name="date"
                 />
@@ -242,21 +251,27 @@ export default function AddConsultationScreen() {
                         validate: () => validateDateTime(watchedDate, watchedTime)
                     }}
                     render={({ field }) => (
-                        <>
-                            <TextInput
-                                label="Hora"
-                                placeholder="Selecione um horário"
-                                value={field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
-                                onFocus={() => setShowTimePicker(true)}
-                                style={styles.input}
+                        <View style={styles.input}>
+                            <Button
                                 mode="outlined"
-                                right={<TextInput.Icon icon="clock-outline" />}
-                                error={!!errors.time}
-                            />
+                                icon="clock-outline"
+                                onPress={() => setShowTimePicker(true)}
+                                style={[
+                                    styles.dateTimeButton,
+                                    errors.time && styles.errorButton
+                                ]}
+                                contentStyle={styles.buttonContent}
+                                labelStyle={[
+                                    styles.buttonLabel,
+                                    !field.value && styles.placeholderLabel
+                                ]}
+                            >
+                                {field.value ? field.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Selecione um horário'}
+                            </Button>
                             <HelperText type="error" visible={!!errors.time}>
                                 {errors.time?.message}
                             </HelperText>
-                        </>
+                        </View>
                     )}
                     name="time"
                 />
@@ -270,7 +285,6 @@ export default function AddConsultationScreen() {
                         onChange={handleTimeChange}
                     />
                 )}
-
 
                 <Button
                     mode="contained"
@@ -302,5 +316,26 @@ const styles = StyleSheet.create({
         marginTop: 24,
         width: '75%',
         marginHorizontal: 'auto'
+    },
+    dateTimeButton: {
+        height: 56,
+        justifyContent: 'flex-start',
+    },
+    errorButton: {
+        borderColor: '#B00020',
+        borderWidth: 2,
+    },
+    buttonContent: {
+        height: 56,
+        justifyContent: 'flex-start',
+        paddingLeft: 12,
+    },
+    buttonLabel: {
+        fontSize: 16,
+        textAlign: 'left',
+        flex: 1,
+    },
+    placeholderLabel: {
+        color: '#757575',
     }
 });

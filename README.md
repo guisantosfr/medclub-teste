@@ -5,9 +5,9 @@ Protótipo de aplicativo mobile para gerencimento de consultas médicas.
 ## 📸 Screenshots
 
 <div style="display: flex; justify-content: space-evenly;">
-    <img src="./docs/listagem.jpg" width="300" />
-    <img src="./docs/nova-consulta.jpg" width="300" />
-    <img src="./docs/detalhes.jpg" width="300" />
+    <img src="./docs/listagem.jpg" width="275" />
+    <img src="./docs/nova-consulta.jpg" width="275" />
+    <img src="./docs/detalhes.jpg" width="275" />
 </div>
 
 ## 🚀 Funcionalidades
